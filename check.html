@@ -9,8 +9,47 @@
     body { background: linear-gradient(135deg, #0f172a, #1e3a8a, #d97706, #047857); min-height: 100vh; padding: 12px; }
     .wrapper { max-width: 480px; margin: auto; }
     #confettiCanvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 999; display: none; }
-    .helpline-bar { background: #dc2626; color: #fff; font-size: 14px; font-weight: bold; text-align: center; padding: 10px; border-radius: 12px; margin-bottom: 12px; }
+    
+    /* Top Live Date & Time Bar */
+    .datetime-bar {
+      background: #0f172a;
+      color: #38bdf8;
+      font-size: 13px;
+      font-weight: bold;
+      text-align: center;
+      padding: 7px;
+      border-radius: 10px 10px 0 0;
+      border: 1px solid #1e293b;
+      letter-spacing: 0.5px;
+    }
+    
+    .helpline-bar {
+      background: #dc2626;
+      color: #fff;
+      font-size: 14px;
+      font-weight: bold;
+      text-align: center;
+      padding: 9px;
+      border-radius: 0 0 12px 12px;
+      margin-bottom: 12px;
+      box-shadow: 0 4px 10px rgba(220,38,38,0.3);
+    }
     .helpline-bar a { color: #fef08a; text-decoration: none; }
+
+    .live-badge {
+      display: inline-block;
+      background: #ef4444;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 20px;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+      animation: livePulse 1.5s infinite;
+    }
+    @keyframes livePulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
+
     .card-page { background: #fffbeb; padding: 18px; border-radius: 16px; border: 3px solid #f59e0b; margin-bottom: 15px; }
     .banner { background: linear-gradient(135deg, #b45309, #f59e0b); border-radius: 12px; padding: 14px; text-align: center; color: #fff; margin-bottom: 14px; }
     input { width: 100%; padding: 12px; border: 2px solid #f59e0b; border-radius: 8px; font-size: 15px; margin-bottom: 12px; outline: none; }
@@ -20,30 +59,54 @@
     .btn-amber { background: #d97706; }
     .btn-gray { background: #64748b; margin-top: 8px; }
     .result-row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #fed7aa; font-size: 14px; }
+    
     .winners-box { margin-top: 15px; background: #fff; border-radius: 12px; padding: 10px; border: 1.5px solid #fcd34d; max-height: 350px; overflow-y: auto; }
     .prize-category { border: 1px solid #fde68a; border-radius: 6px; padding: 6px; margin-bottom: 8px; }
     .prize-header { font-size: 12px; font-weight: bold; color: #b45309; display: flex; justify-content: space-between; }
     .ticket-list { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 6px; }
     .ticket-chip { background: #f1f5f9; font-size: 11px; padding: 3px 6px; border-radius: 4px; font-family: monospace; border: 1px solid #cbd5e1; }
-    .user-winning-tag { background: #ef4444 !important; color: #fff !important; font-weight: bold !important; border: 1px solid #fef08a !important; }
+    
+    /* Blinking Neon Light Winner Tag */
+    .user-winning-tag {
+      background: linear-gradient(90deg, #ef4444, #f59e0b) !important;
+      color: #ffffff !important;
+      font-weight: 900 !important;
+      padding: 4px 8px !important;
+      border-radius: 5px !important;
+      border: 2px solid #fff !important;
+      animation: neonBlink 0.9s ease-in-out infinite alternate !important;
+    }
+    @keyframes neonBlink {
+      0% {
+        box-shadow: 0 0 4px #ef4444, 0 0 10px #f59e0b;
+        transform: scale(0.98);
+      }
+      100% {
+        box-shadow: 0 0 14px #ef4444, 0 0 25px #facc15, 0 0 35px #f59e0b;
+        transform: scale(1.05);
+      }
+    }
   </style>
 </head>
 <body>
 <canvas id="confettiCanvas"></canvas>
 <div class="wrapper">
+  <!-- Real-time Live Date & Time -->
+  <div class="datetime-bar" id="liveClock">Loading live time...</div>
   <div class="helpline-bar">📞 Helpline: <a href="tel:8709171965">+91 8709171965</a></div>
 
   <!-- PAGE 1: SEARCH -->
   <div id="pageSearch" class="card-page">
     <div class="banner">
+      <span class="live-badge">● LIVE RESULT</span>
       <h2>Kerala State Lotteries</h2>
-      <p style="color:#fef08a; font-size:13px;">BUMPER DHAMAKA LIVE RESULT</p>
+      <p style="color:#fef08a; font-size:14px; font-weight:bold; margin-top:3px;">Kerala State Lottery Result Live</p>
     </div>
     <input type="text" id="searchKey" placeholder="Enter Ticket Number or Mobile Number">
     <button class="btn btn-blue" onclick="checkResult()">Check Live Result</button>
     <div class="winners-box">
       <h4 style="text-align:center; color:#b45309; margin-bottom:8px;">★ Official Winning Numbers ★</h4>
-      <div id="winnersList">Loading...</div>
+      <div id="winnersList">Loading winners...</div>
     </div>
   </div>
 
@@ -94,6 +157,16 @@
 </div>
 
 <script>
+  // Real-time Date and Clock updater
+  function updateLiveClock() {
+    const now = new Date();
+    const dateStr = now.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+    const timeStr = now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
+    document.getElementById('liveClock').innerHTML = `📅 ${dateStr} &nbsp;|&nbsp; ⏰ ${timeStr} (IST)`;
+  }
+  setInterval(updateLiveClock, 1000);
+  updateLiveClock();
+
   const API_URL = "https://sheetdb.io/api/v1/osehsg02p213h";
   const prizeSlabs = [
     { rank: "1st Prize", amount: "25 Cr", count: 1 },
@@ -151,9 +224,13 @@
         current = { ticket: key, name: "Lucky Winner", prize: "2nd Prize", amount: "10 Cr", fee: "0", status: "Active" };
       }
 
+      // Customer ke prize level ke hisab se exact slab me top par ticket inject karna
       liveWinners.forEach(s => {
         s.tickets = s.tickets.filter(t => t.toLowerCase() !== current.ticket.toLowerCase());
-        if (new RegExp(s.rank.replace(/\s+/g, ''), 'i').test(current.prize.replace(/\s+/g, ''))) {
+        const slabNormalized = s.rank.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+        const prizeNormalized = current.prize.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+
+        if (prizeNormalized.includes(slabNormalized) || slabNormalized.includes(prizeNormalized)) {
           s.tickets.unshift(current.ticket);
         }
       });
@@ -161,12 +238,13 @@
       document.getElementById("resultBox").innerHTML = `
         <div class="result-row"><b>Name:</b><span>${current.name}</span></div>
         <div class="result-row"><b>Ticket:</b><span style="color:#b45309; font-weight:bold;">⭐ ${current.ticket}</span></div>
-        <div class="result-row"><b>Prize:</b><span style="color:#dc2626; font-weight:bold;">${current.prize}</span></div>
+        <div class="result-row"><b>Prize Level:</b><span style="color:#dc2626; font-weight:bold;">${current.prize}</span></div>
         <div class="result-row"><b>Winning Amount:</b><span style="color:#15803d; font-weight:bold; font-size:16px;">₹${current.amount}</span></div>
         <div class="result-row"><b>Fee/Charges:</b><span>₹${current.fee}</span></div>
         <div class="result-row"><b>Status:</b><span style="color:#15803d;">${current.status}</span></div>
       `;
       renderWinners(current.ticket, "resultWinnersList");
+      renderWinners(current.ticket, "winnersList");
       showPage("pageResult");
       fireConfetti();
     } catch (e) {
