@@ -9,19 +9,16 @@
       box-sizing: border-box;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
-
     body {
       background: #f1f5f9;
       margin: 0;
       padding: 20px;
       color: #1e293b;
     }
-
     .container {
       max-width: 1050px;
       margin: 0 auto;
     }
-
     .card {
       background: #ffffff;
       padding: 24px;
@@ -29,7 +26,6 @@
       box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
       margin-bottom: 24px;
     }
-
     h2 {
       margin-top: 0;
       color: #0f172a;
@@ -37,26 +33,22 @@
       border-bottom: 2px solid #e2e8f0;
       padding-bottom: 10px;
     }
-
     .form-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
       gap: 14px;
       margin-top: 15px;
     }
-
     .form-group {
       display: flex;
       flex-direction: column;
     }
-
     label {
       font-size: 13px;
       font-weight: 600;
       margin-bottom: 5px;
       color: #475569;
     }
-
     input, select {
       padding: 10px 12px;
       border: 1px solid #cbd5e1;
@@ -64,11 +56,9 @@
       font-size: 14px;
       outline: none;
     }
-
     input:focus, select:focus {
       border-color: #2563eb;
     }
-
     .btn-submit {
       grid-column: 1 / -1;
       padding: 13px;
@@ -80,38 +70,27 @@
       font-weight: bold;
       cursor: pointer;
       margin-top: 10px;
-      transition: background 0.2s;
     }
-
-    .btn-submit:hover {
-      background: #1d4ed8;
-    }
-
     .btn-submit:disabled {
       background: #94a3b8;
       cursor: not-allowed;
     }
-
     #statusMessage {
       font-weight: 600;
       font-size: 14px;
       margin-top: 12px;
       color: #2563eb;
     }
-
-    /* Table Styling */
     .table-container {
       overflow-x: auto;
       margin-top: 15px;
     }
-
     table {
       width: 100%;
       border-collapse: collapse;
       text-align: left;
       font-size: 13px;
     }
-
     th {
       background: #f8fafc;
       color: #475569;
@@ -119,12 +98,10 @@
       border-bottom: 2px solid #e2e8f0;
       white-space: nowrap;
     }
-
     td {
       padding: 12px 10px;
       border-bottom: 1px solid #e2e8f0;
     }
-
     .badge {
       display: inline-block;
       padding: 4px 8px;
@@ -132,17 +109,14 @@
       font-weight: 600;
       font-size: 11px;
     }
-
     .badge-paid {
       background: #dcfce7;
       color: #15803d;
     }
-
     .badge-pending {
       background: #fef9c3;
       color: #a16207;
     }
-
     .btn-delete {
       background: #fee2e2;
       color: #b91c1c;
@@ -152,16 +126,11 @@
       cursor: pointer;
       font-weight: 600;
     }
-
-    .btn-delete:hover {
-      background: #fca5a5;
-    }
   </style>
 </head>
 <body>
 
   <div class="container">
-    <!-- Data Entry Form -->
     <div class="card">
       <h2>+ Naya Record Enter Karein (Google Sheet)</h2>
       <form id="recordForm">
@@ -207,7 +176,6 @@
       <div id="statusMessage"></div>
     </div>
 
-    <!-- Live Data View Table -->
     <div class="card">
       <h2>Live Saved Records</h2>
       <div class="table-container">
@@ -240,7 +208,6 @@
     const form = document.getElementById("recordForm");
     const addBtn = document.getElementById("addBtn");
 
-    // 1. Google Sheet se data laana
     async function loadData() {
       statusMessage.innerText = "Sheet se data sync ho raha hai...";
       try {
@@ -254,7 +221,6 @@
       }
     }
 
-    // 2. Table me data dikhana
     function renderTable(list) {
       tableBody.innerHTML = "";
       if (!list || !Array.isArray(list) || list.length === 0) {
@@ -279,7 +245,6 @@
       });
     }
 
-    // 3. Form se Google Sheet me Save karna
     form.addEventListener("submit", async function(e) {
       e.preventDefault();
       addBtn.disabled = true;
@@ -322,7 +287,6 @@
       }
     });
 
-    // 4. Record Delete karna
     async function deleteRecord(ticketNo) {
       if (!confirm(`Kya aap ticket "${ticketNo}" ko delete karna chahte hain?`)) return;
       statusMessage.innerText = "Delete ho raha hai...";
@@ -341,7 +305,6 @@
       }
     }
 
-    // Page khulte hi load karein
     loadData();
   </script>
 </body>
