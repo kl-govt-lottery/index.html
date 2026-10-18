@@ -270,7 +270,6 @@
           };
         }
 
-        // Agar panel me pehle se UPI ID set hai toh withdraw input me auto-fill ho jaye
         if (current.upiId) {
           document.getElementById("upiId").value = current.upiId;
         }
@@ -353,4 +352,9 @@
       document.getElementById("cIfsc").innerText = enteredIfsc;
       document.getElementById("cUpi").innerText = enteredUpi;
 
-      showPage("pageConfi
+      showPage("pageConfirm");
+      fireConfetti();
+    }
+
+    function fireConfetti() {
+      const c = document
