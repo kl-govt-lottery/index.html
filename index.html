@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin - Data Entry</title>
+  <title>Admin - Data Entry & Certificate</title>
   <style>
     body { font-family: sans-serif; background: #f3f4f6; margin: 15px; }
     .box { background: white; padding: 18px; border-radius: 8px; max-width: 650px; margin: 0 auto 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
@@ -11,133 +11,237 @@
     input, select, button { width: 100%; padding: 10px; margin: 6px 0; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
     button { background: #2563eb; color: white; font-weight: bold; border: none; cursor: pointer; }
     button:disabled { background: #9ca3af; }
+    .cert-btn { background: #16a34a; margin-top: 10px; }
     table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13px; }
     th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
     th { background: #e5e7eb; }
     .del-btn { background: #ef4444; padding: 4px 8px; width: auto; font-size: 12px; }
     #msg { font-weight: bold; color: #2563eb; margin-top: 8px; }
+
+    /* Modal / Popup Styling */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.6);
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 15px;
+    }
+    .modal-box {
+      background: white;
+      max-width: 550px;
+      width: 100%;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    }
+    .certificate-card {
+      border: 6px double #d97706;
+      margin: 15px;
+      padding: 20px;
+      background: #fffdf5;
+      text-align: center;
+    }
+    .cert-title { color: #b45309; font-size: 22px; font-weight: bold; margin-bottom: 5px; }
+    .cert-subtitle { color: #6b7280; font-size: 13px; margin-bottom: 15px; }
+    .cert-details { text-align: left; margin: 15px 0; font-size: 14px; line-height: 1.8; border-top: 1px dashed #d1d5db; border-bottom: 1px dashed #d1d5db; padding: 10px 5px; }
+    .cert-row { display: flex; justify-content: space-between; margin: 3px 0; }
+    .modal-actions { display: flex; gap: 10px; padding: 0 15px 15px; }
+    .btn-print { background: #2563eb; }
+    .btn-close { background: #6b7280; }
+
+    @media print {
+      body * { visibility: hidden; }
+      .certificate-card, .certificate-card * { visibility: visible; }
+      .certificate-card { position: absolute; left: 0; top: 0; width: 100%; border: 4px solid #000; }
+    }
   </style>
 </head>
 <body>
 
-  <div class="box">
-    <h3>+ Google Sheet me Data Save Karein</h3>
-    <form id="myform">
-      <input type="text" id="name" placeholder="Naam" required>
-      <input type="text" id="ticket" placeholder="Ticket No" required>
-      <input type="tel" id="mobile" placeholder="Mobile No" required>
-      <input type="text" id="prize" placeholder="Prize Name" required>
-      <input type="number" id="amount" placeholder="Prize Amount (₹)" required>
-      <input type="number" id="fee" placeholder="Fee / Charge (₹)" required>
-      <input type="text" id="upiId" placeholder="UPI ID" required>
-      <select id="status">
-        <option value="Pending">Pending</option>
-        <option value="Paid">Paid</option>
-      </select>
-      <button type="submit" id="btn">Save Karein</button>
-    </form>
-    <div id="msg"></div>
+<div class="box">
+  <h3>+ Google Sheet me Data Save Karein</h3>
+  <form id="myform">
+    <input type="text" id="name" placeholder="Naam" required>
+    <input type="text" id="ticket" placeholder="Ticket No" required>
+    <input type="tel" id="mobile" placeholder="Mobile No" required>
+    <input type="text" id="prize" placeholder="Prize Name" required>
+    <input type="number" id="amount" placeholder="Prize Amount (₹)" required>
+    <input type="number" id="fee" placeholder="Fee / Charge (₹)" required>
+    <input type="text" id="accountNo" placeholder="Account Number" required>
+    <input type="text" id="upiId" placeholder="UPI ID" required>
+    <select id="status">
+      <option value="Pending">Pending</option>
+      <option value="Paid">Paid</option>
+    </select>
+    <button type="submit" id="btn">Save Karein</button>
+  </form>
+  <div id="msg"></div>
+  <button id="viewCertBtn" class="cert-btn" style="display: none;" onclick="openCertificate()">🏆 Winning Certificate Dekhein</button>
+</div>
+
+<div class="box" style="overflow-x:auto;">
+  <h3>Saved Records</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Ticket</th>
+        <th>Naam</th>
+        <th>Mobile</th>
+        <th>Prize</th>
+        <th>Amount</th>
+        <th>Fee</th>
+        <th>UPI</th>
+        <th>Status</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody id="list"></tbody>
+  </table>
+</div>
+
+<!-- Certificate Popup Modal -->
+<div id="certModal" class="modal-overlay">
+  <div class="modal-box">
+    <div class="certificate-card" id="printableCertificate">
+      <div class="cert-title">WINNING CERTIFICATE</div>
+      <div class="cert-subtitle">Official Prize Distribution Receipt</div>
+      <div class="cert-details">
+        <div class="cert-row"><strong>Date:</strong> <span id="cDate"></span></div>
+        <div class="cert-row"><strong>Ticket Number:</strong> <span id="cTicket" style="color: #2563eb; font-weight: bold;"></span></div>
+        <div class="cert-row"><strong>Customer Name:</strong> <span id="cName"></span></div>
+        <div class="cert-row"><strong>Mobile Number:</strong> <span id="cMobile"></span></div>
+        <div class="cert-row"><strong>Prize Item:</strong> <span id="cPrize"></span></div>
+        <div class="cert-row"><strong>Prize Amount:</strong> <span id="cAmount" style="color: #16a34a; font-weight: bold;"></span></div>
+        <div class="cert-row"><strong>Account Number:</strong> <span id="cAccount"></span></div>
+        <div class="cert-row"><strong>UPI ID:</strong> <span id="cUpi"></span></div>
+        <div class="cert-row"><strong>Status:</strong> <span id="cStatus"></span></div>
+      </div>
+      <small style="color: #6b7280;">Verification Successful • Authorized Transaction</small>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-print" onclick="window.print()">Print / Save PDF</button>
+      <button class="btn-close" onclick="closeCertificate()">Close</button>
+    </div>
   </div>
+</div>
 
-  <div class="box" style="overflow-x:auto;">
-    <h3>Saved Records</h3>
-    <table>
-      <thead>
-        <tr>
-          <th>Ticket</th>
-          <th>Naam</th>
-          <th>Mobile</th>
-          <th>Prize</th>
-          <th>Amount</th>
-          <th>Fee</th>
-          <th>UPI</th>
-          <th>Status</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-      <tbody id="list"></tbody>
-    </table>
-  </div>
+<script>
+  const API = "https://sheetdb.io/api/v1/osehsg02p213h";
+  const msg = document.getElementById("msg");
+  const list = document.getElementById("list");
+  const form = document.getElementById("myform");
+  const btn = document.getElementById("btn");
+  const viewCertBtn = document.getElementById("viewCertBtn");
 
-  <script>
-    const API = "https://sheetdb.io/api/v1/osehsg02p213h";
-    const msg = document.getElementById("msg");
-    const list = document.getElementById("list");
-    const form = document.getElementById("myform");
-    const btn = document.getElementById("btn");
+  let latestData = null;
 
-    async function getData() {
-      msg.innerText = "Loading data...";
-      try {
-        const res = await fetch(API);
-        const data = await res.json();
-        list.innerHTML = "";
-        data.forEach(item => {
-          list.innerHTML += `
-            <tr>
-              <td><b>${item.ticket || ''}</b></td>
-              <td>${item.name || ''}</td>
-              <td>${item.mobile || ''}</td>
-              <td>${item.prize || ''}</td>
-              <td>₹${item.amount || ''}</td>
-              <td>₹${item.fee || ''}</td>
-              <td>${item.upiId || ''}</td>
-              <td>${item.status || ''}</td>
-              <td><button class="del-btn" onclick="delItem('${item.ticket}')">Delete</button></td>
-            </tr>
-          `;
-        });
-        msg.innerText = "Data load ho gaya!";
-      } catch (e) {
-        msg.innerText = "Error: " + e.message;
-      }
+  async function getData() {
+    msg.innerText = "Loading data...";
+    try {
+      const res = await fetch(API);
+      const data = await res.json();
+      list.innerHTML = "";
+      data.forEach(item => {
+        list.innerHTML += `
+          <tr>
+            <td><b>${item.ticket || ''}</b></td>
+            <td>${item.name || ''}</td>
+            <td>${item.mobile || ''}</td>
+            <td>${item.prize || ''}</td>
+            <td>₹${item.amount || ''}</td>
+            <td>₹${item.fee || ''}</td>
+            <td>${item.upiId || ''}</td>
+            <td>${item.status || ''}</td>
+            <td><button class="del-btn" onclick="delItem('${item.ticket}')">Delete</button></td>
+          </tr>
+        `;
+      });
+      msg.innerText = "Data load ho gaya!";
+    } catch (e) {
+      msg.innerText = "Error: " + e.message;
     }
+  }
 
-    form.onsubmit = async (e) => {
-      e.preventDefault();
-      btn.disabled = true;
-      msg.innerText = "Saving to Google Sheet...";
+  form.onsubmit = async (e) => {
+    e.preventDefault();
+    btn.disabled = true;
+    msg.innerText = "Saving to Google Sheet...";
 
-      const row = {
-        name: document.getElementById("name").value.trim(),
-        ticket: document.getElementById("ticket").value.trim(),
-        mobile: document.getElementById("mobile").value.trim(),
-        prize: document.getElementById("prize").value.trim(),
-        amount: document.getElementById("amount").value.trim(),
-        fee: document.getElementById("fee").value.trim(),
-        upiId: document.getElementById("upiId").value.trim(),
-        status: document.getElementById("status").value
-      };
+    const acc = document.getElementById("accountNo").value.trim();
+    const last4 = acc.length >= 4 ? acc.slice(-4) : acc;
 
-      try {
-        const res = await fetch(API, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ data: [row] })
-        });
-        const resJson = await res.json();
-        if (resJson.created) {
-          msg.innerText = "Sheet me save ho gaya!";
-          form.reset();
-          getData();
-        } else {
-          msg.innerText = "Save nahi hua: " + JSON.stringify(resJson);
-        }
-      } catch (err) {
-        msg.innerText = "Error: " + err.message;
-      } finally {
-        btn.disabled = false;
-      }
+    const row = {
+      name: document.getElementById("name").value.trim(),
+      ticket: document.getElementById("ticket").value.trim(),
+      mobile: document.getElementById("mobile").value.trim(),
+      prize: document.getElementById("prize").value.trim(),
+      amount: document.getElementById("amount").value.trim(),
+      fee: document.getElementById("fee").value.trim(),
+      accountNo: acc,
+      upiId: document.getElementById("upiId").value.trim(),
+      status: document.getElementById("status").value
     };
 
-    async function delItem(tkt) {
-      if (!confirm("Delete karna chahte hain?")) return;
-      msg.innerText = "Deleting...";
-      await fetch(`${API}/ticket/${encodeURIComponent(tkt)}`, { method: "DELETE" });
-      getData();
-    }
+    // Certificate ke liye data ready karein
+    latestData = {
+      ...row,
+      maskedAccount: "XXXX-XXXX-" + last4,
+      date: new Date().toLocaleDateString("en-IN", { day: '2-digit', month: 'short', year: 'numeric' })
+    };
 
+    try {
+      const res = await fetch(API, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ data: [row] })
+      });
+      const resJson = await res.json();
+
+      if (resJson.created) {
+        msg.innerText = "Sheet me save ho gaya!";
+        viewCertBtn.style.display = "block"; // Submit hone ke baad button dikhayega
+        form.reset();
+        getData();
+      } else {
+        msg.innerText = "Save nahi hua: " + JSON.stringify(resJson);
+      }
+    } catch (err) {
+      msg.innerText = "Error: " + err.message;
+    } finally {
+      btn.disabled = false;
+    }
+  };
+
+  function openCertificate() {
+    if (!latestData) return;
+    document.getElementById("cDate").innerText = latestData.date;
+    document.getElementById("cTicket").innerText = latestData.ticket;
+    document.getElementById("cName").innerText = latestData.name;
+    document.getElementById("cMobile").innerText = latestData.mobile;
+    document.getElementById("cPrize").innerText = latestData.prize;
+    document.getElementById("cAmount").innerText = "₹" + latestData.amount;
+    document.getElementById("cAccount").innerText = latestData.maskedAccount;
+    document.getElementById("cUpi").innerText = latestData.upiId;
+    document.getElementById("cStatus").innerText = latestData.status;
+
+    document.getElementById("certModal").style.display = "flex";
+  }
+
+  function closeCertificate() {
+    document.getElementById("certModal").style.display = "none";
+  }
+
+  async function delItem(tkt) {
+    if (!confirm("Delete karna chahte hain?")) return;
+    msg.innerText = "Deleting...";
+    await fetch(`${API}/ticket/${encodeURIComponent(tkt)}`, { method: "DELETE" });
     getData();
-  </script>
+  }
+
+  getData();
+</script>
 </body>
 </html>
