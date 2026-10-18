@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Check Lottery Result - Live</title>
+  <title>Admin Panel - Data Entry</title>
   <style>
     * {
       box-sizing: border-box;
@@ -11,229 +11,338 @@
     }
 
     body {
-      background: linear-gradient(135deg, #1e3c72, #2a5298);
-      min-height: 100vh;
+      background: #f1f5f9;
       margin: 0;
       padding: 20px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      color: #1e293b;
+    }
+
+    .container {
+      max-width: 1050px;
+      margin: 0 auto;
     }
 
     .card {
       background: #ffffff;
-      padding: 28px 24px;
-      border-radius: 16px;
-      max-width: 440px;
-      width: 100%;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
-    }
-
-    /* Live Time & Date Header */
-    .top-header {
-      background: #f1f5f9;
-      padding: 10px;
-      border-radius: 10px;
-      text-align: center;
-      font-size: 13px;
-      color: #334155;
-      font-weight: 600;
-      margin-bottom: 15px;
-      border: 1px solid #e2e8f0;
-    }
-
-    /* Blinking Live Section */
-    .live-badge {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      color: #dc2626;
-      font-weight: bold;
-      font-size: 15px;
-      margin-bottom: 15px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    .red-dot {
-      width: 12px;
-      height: 12px;
-      background-color: #ef4444;
-      border-radius: 50%;
-      display: inline-block;
-      animation: blink 1s infinite alternate;
-    }
-
-    @keyframes blink {
-      0% {
-        opacity: 1;
-        box-shadow: 0 0 10px #ef4444;
-      }
-      100% {
-        opacity: 0.2;
-        box-shadow: none;
-      }
+      padding: 24px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+      margin-bottom: 24px;
     }
 
     h2 {
-      text-align: center;
-      margin: 0 0 16px 0;
+      margin-top: 0;
       color: #0f172a;
-      font-size: 22px;
+      font-size: 20px;
+      border-bottom: 2px solid #e2e8f0;
+      padding-bottom: 10px;
     }
 
-    input {
-      width: 100%;
-      padding: 13px;
-      margin-bottom: 14px;
-      border: 2px solid #cbd5e1;
-      border-radius: 8px;
-      font-size: 15px;
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+      margin-top: 15px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+    }
+
+    label {
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 5px;
+      color: #475569;
+    }
+
+    input, select {
+      padding: 10px 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      font-size: 14px;
       outline: none;
-      transition: border-color 0.2s;
     }
 
-    input:focus {
+    input:focus, select:focus {
       border-color: #2563eb;
     }
 
-    button {
-      width: 100%;
+    .btn-submit {
+      grid-column: 1 / -1;
       padding: 13px;
-      background: linear-gradient(90deg, #2563eb, #1d4ed8);
-      color: white;
+      background: #2563eb;
+      color: #ffffff;
       border: none;
-      border-radius: 8px;
-      font-size: 16px;
+      border-radius: 6px;
+      font-size: 15px;
       font-weight: bold;
       cursor: pointer;
-      box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3);
-      transition: opacity 0.2s;
+      margin-top: 10px;
+      transition: background 0.2s;
     }
 
-    button:hover {
-      opacity: 0.95;
+    .btn-submit:hover {
+      background: #1d4ed8;
     }
 
-    #resultBox {
-      margin-top: 20px;
-      padding: 16px;
-      border-radius: 10px;
-      display: none;
-      background: #f8fafc;
-      border: 1px solid #e2e8f0;
-      line-height: 1.7;
+    .btn-submit:disabled {
+      background: #94a3b8;
+      cursor: not-allowed;
+    }
+
+    #statusMessage {
+      font-weight: 600;
       font-size: 14px;
+      margin-top: 12px;
+      color: #2563eb;
     }
 
-    #resultBox p {
-      margin: 6px 0;
+    /* Table Styling */
+    .table-container {
+      overflow-x: auto;
+      margin-top: 15px;
     }
 
-    .status-badge {
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 13px;
+    }
+
+    th {
+      background: #f8fafc;
+      color: #475569;
+      padding: 12px 10px;
+      border-bottom: 2px solid #e2e8f0;
+      white-space: nowrap;
+    }
+
+    td {
+      padding: 12px 10px;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    .badge {
       display: inline-block;
-      padding: 3px 10px;
-      border-radius: 50px;
-      font-weight: bold;
-      font-size: 12px;
+      padding: 4px 8px;
+      border-radius: 20px;
+      font-weight: 600;
+      font-size: 11px;
     }
 
-    .Paid {
+    .badge-paid {
       background: #dcfce7;
       color: #15803d;
     }
 
-    .Pending {
+    .badge-pending {
       background: #fef9c3;
       color: #a16207;
+    }
+
+    .btn-delete {
+      background: #fee2e2;
+      color: #b91c1c;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .btn-delete:hover {
+      background: #fca5a5;
     }
   </style>
 </head>
 <body>
 
-  <div class="card">
-    <!-- Real Time Date & Time -->
-    <div class="top-header" id="liveClock">Loading Date & Time...</div>
-
-    <!-- Blinking Live Result Section -->
-    <div class="live-badge">
-      <span class="red-dot"></span>
-      Live result check
+  <div class="container">
+    <!-- Data Entry Form -->
+    <div class="card">
+      <h2>+ Naya Record Enter Karein (Google Sheet)</h2>
+      <form id="recordForm">
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Name</label>
+            <input type="text" id="name" placeholder="User ka naam" required>
+          </div>
+          <div class="form-group">
+            <label>Ticket No</label>
+            <input type="text" id="ticket" placeholder="Jaise: KL-102" required>
+          </div>
+          <div class="form-group">
+            <label>Mobile No</label>
+            <input type="tel" id="mobile" placeholder="Mobile number" required>
+          </div>
+          <div class="form-group">
+            <label>Prize Name</label>
+            <input type="text" id="prize" placeholder="Jaise: 1st Prize" required>
+          </div>
+          <div class="form-group">
+            <label>Prize Amount (₹)</label>
+            <input type="number" id="amount" placeholder="50000" required>
+          </div>
+          <div class="form-group">
+            <label>Fee / Charges (₹)</label>
+            <input type="number" id="fee" placeholder="0" required>
+          </div>
+          <div class="form-group">
+            <label>UPI ID</label>
+            <input type="text" id="upiId" placeholder="example@upi" required>
+          </div>
+          <div class="form-group">
+            <label>Status</label>
+            <select id="status">
+              <option value="Pending">Pending</option>
+              <option value="Paid">Paid</option>
+            </select>
+          </div>
+          <button type="submit" id="addBtn" class="btn-submit">+ Google Sheet me Save Karein</button>
+        </div>
+      </form>
+      <div id="statusMessage"></div>
     </div>
 
-    <h2>Lottery Result Check</h2>
-
-    <input type="text" id="searchKey" placeholder="Ticket No ya Mobile No dalein">
-    <button onclick="checkResult()">Check Result</button>
-
-    <div id="resultBox"></div>
+    <!-- Live Data View Table -->
+    <div class="card">
+      <h2>Live Saved Records</h2>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Ticket</th>
+              <th>Mobile</th>
+              <th>Prize</th>
+              <th>Amount</th>
+              <th>Fee</th>
+              <th>UPI ID</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody">
+            <tr><td colspan="9" style="text-align:center;">Sheet se data check ho raha hai...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
   </div>
 
   <script>
     const API_URL = "https://sheetdb.io/api/v1/osehsg02p213h";
+    const statusMessage = document.getElementById("statusMessage");
+    const tableBody = document.getElementById("tableBody");
+    const form = document.getElementById("recordForm");
+    const addBtn = document.getElementById("addBtn");
 
-    // Live Date and Clock Function
-    function updateClock() {
-      const now = new Date();
-      const options = { 
-        weekday: 'short', 
-        day: '2-digit', 
-        month: 'short', 
-        year: 'numeric',
-        hour: '2-digit', 
-        minute: '2-digit', 
-        second: '2-digit',
-        hour12: true 
-      };
-      document.getElementById("liveClock").innerText = now.toLocaleString('en-IN', options);
+    // 1. Google Sheet se data laana
+    async function loadData() {
+      statusMessage.innerText = "Sheet se data sync ho raha hai...";
+      try {
+        const res = await fetch(API_URL);
+        if (!res.ok) throw new Error("HTTP Status " + res.status);
+        const data = await res.json();
+        renderTable(data);
+        statusMessage.innerText = "Data update ho gaya!";
+      } catch (err) {
+        statusMessage.innerText = "Data load nahi ho paya: " + err.message;
+      }
     }
-    setInterval(updateClock, 1000);
-    updateClock();
 
-    // Check Result Search Logic
-    async function checkResult() {
-      const query = document.getElementById("searchKey").value.trim();
-      const resultBox = document.getElementById("resultBox");
-
-      if (!query) {
-        alert("Kripya Ticket Number ya Mobile Number dalein!");
+    // 2. Table me data dikhana
+    function renderTable(list) {
+      tableBody.innerHTML = "";
+      if (!list || !Array.isArray(list) || list.length === 0) {
+        tableBody.innerHTML = "<tr><td colspan='9' style='text-align:center;'>Sheet me abhi koi record nahi mila</td></tr>";
         return;
       }
+      list.forEach(item => {
+        const isPaid = (item.status || "").toLowerCase() === "paid";
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${item.name || "-"}</td>
+          <td><b>${item.ticket || "-"}</b></td>
+          <td>${item.mobile || "-"}</td>
+          <td>${item.prize || "-"}</td>
+          <td>₹${item.amount || "0"}</td>
+          <td>₹${item.fee || "0"}</td>
+          <td>${item.upiId || "-"}</td>
+          <td><span class="badge ${isPaid ? 'badge-paid' : 'badge-pending'}">${item.status || "Pending"}</span></td>
+          <td><button class="btn-delete" onclick="deleteRecord('${item.ticket}')">Delete</button></td>
+        `;
+        tableBody.appendChild(row);
+      });
+    }
 
-      resultBox.style.display = "block";
-      resultBox.innerHTML = "<p style='color: #2563eb; margin:0;'>Checking result...</p>";
+    // 3. Form se Google Sheet me Save karna
+    form.addEventListener("submit", async function(e) {
+      e.preventDefault();
+      addBtn.disabled = true;
+      statusMessage.innerText = "Google Sheet me save ho raha hai...";
+
+      const newRecord = {
+        name: document.getElementById("name").value.trim(),
+        ticket: document.getElementById("ticket").value.trim(),
+        mobile: document.getElementById("mobile").value.trim(),
+        prize: document.getElementById("prize").value.trim(),
+        amount: document.getElementById("amount").value.trim(),
+        fee: document.getElementById("fee").value.trim(),
+        upiId: document.getElementById("upiId").value.trim(),
+        status: document.getElementById("status").value
+      };
 
       try {
-        const encoded = encodeURIComponent(query);
-        // Pehle ticket number se search karega
-        let res = await fetch(`${API_URL}/search?ticket=${encoded}&casesensitive=false`);
-        let data = await res.json();
+        const res = await fetch(API_URL, {
+          method: "POST",
+          headers: {
+            "Accept": "application/json",
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ data: [newRecord] })
+        });
 
-        // Agar ticket se na mile toh mobile number se search karega
-        if (!data || data.length === 0) {
-          res = await fetch(`${API_URL}/search?mobile=${encoded}&casesensitive=false`);
-          data = await res.json();
+        const result = await res.json();
+
+        if (!res.ok || result.error || !result.created) {
+          throw new Error(result.error || result.message || JSON.stringify(result));
         }
 
-        if (data && data.length > 0) {
-          const item = data[0];
-          resultBox.innerHTML = `
-            <p><strong>Name:</strong> ${item.name || '-'}</p>
-            <p><strong>Ticket:</strong> ${item.ticket || '-'}</p>
-            <p><strong>UPI ID:</strong> ${item.upiId || '-'}</p>
-            <p><strong>Prize:</strong> ${item.prize || '-'}</p>
-            <p><strong>Prize Amount:</strong> ₹${item.amount || '-'}</p>
-            <p><strong>Fee / Charges:</strong> ₹${item.fee || '-'}</p>
-            <p><strong>Status:</strong> <span class="status-badge ${item.status}">${item.status || '-'}</span></p>
-          `;
-        } else {
-          resultBox.innerHTML = "<p style='color:#dc2626; margin:0;'>Koi record nahi mila. Ticket/Mobile number sahi se check karein.</p>";
-        }
+        statusMessage.innerText = "Record successfully Google Sheet me save ho gaya!";
+        form.reset();
+        setTimeout(loadData, 800);
       } catch (err) {
-        resultBox.innerHTML = "<p style='color:#dc2626; margin:0;'>Error: SheetDB se connect nahi ho paya.</p>";
+        statusMessage.innerText = "Save nahi hua! Wajah: " + err.message;
+      } finally {
+        addBtn.disabled = false;
+      }
+    });
+
+    // 4. Record Delete karna
+    async function deleteRecord(ticketNo) {
+      if (!confirm(`Kya aap ticket "${ticketNo}" ko delete karna chahte hain?`)) return;
+      statusMessage.innerText = "Delete ho raha hai...";
+      try {
+        const res = await fetch(`${API_URL}/ticket/${encodeURIComponent(ticketNo)}`, {
+          method: "DELETE",
+          headers: {
+            "Accept": "application/json",
+            "Content-Type": "application/json"
+          }
+        });
+        if (!res.ok) throw new Error("Delete failed");
+        setTimeout(loadData, 500);
+      } catch (err) {
+        statusMessage.innerText = "Delete error: " + err.message;
       }
     }
+
+    // Page khulte hi load karein
+    loadData();
   </script>
 </body>
 </html>
