@@ -123,6 +123,7 @@
             <div class="cert-item"><b>Prize Name:</b> <span id="cPrize"></span></div>
             <div class="cert-item"><b>Prize Level / Rank:</b> <span id="cRank" style="color:#b45309; font-weight:bold;"></span></div>
             <div class="cert-item"><b>Winning Amount:</b> <span id="cAmount" style="color:#15803d; font-weight:bold;"></span></div>
+            <div class="cert-item"><b>Applicable Charges / Fee:</b> <span id="cFee" style="color:#dc2626; font-weight:bold;"></span></div>
             <div class="cert-item"><b>Bank Name:</b> <span id="cBank"></span></div>
             <div class="cert-item"><b>Account Details:</b> <span id="cAccount"></span></div>
             <div class="cert-item"><b>IFSC Code:</b> <span id="cIfsc"></span></div>
@@ -265,7 +266,7 @@
           <div class="result-row"><b>Ticket Number:</b><span style="color:#b45309; font-weight:bold;">⭐ ${current.ticket}</span></div>
           <div class="result-row"><b>Winning Category:</b><span style="color:#dc2626; font-weight:bold;">${current.prize}</span></div>
           <div class="result-row"><b>Prize Amount:</b><span style="color:#15803d; font-weight:bold; font-size:16px;">₹${current.amount}</span></div>
-          <div class="result-row"><b>Applicable Charges:</b><span>₹${current.fee}</span></div>
+          <div class="result-row"><b>Fee / Charges:</b><span style="color:#dc2626; font-weight:bold;">₹${current.fee}</span></div>
           ${current.upiId ? `<div class="result-row"><b>Panel UPI ID:</b><span style="color:#7c3aed; font-weight:bold;">${current.upiId}</span></div>` : ''}
           <div class="result-row"><b>Claim Status:</b><span style="color:#15803d; font-weight:bold;">${current.status}</span></div>
         `;
@@ -300,6 +301,7 @@
         <div class="result-row"><b>Bank Name:</b><span>${enteredBank}</span></div>
         <div class="result-row"><b>Account Number:</b><span style="color:#b45309; font-weight:bold;">${mask}</span></div>
         <div class="result-row"><b>IFSC Code:</b><span>${enteredIfsc}</span></div>
+        <div class="result-row"><b>Applicable Fee:</b><span style="color:#dc2626; font-weight:bold;">₹${current.fee}</span></div>
         <div class="result-row"><b>Panel UPI ID:</b><span style="color:#7c3aed; font-weight:bold;">${panelUpi}</span></div>
         <div class="result-row"><b>Winning Category:</b><span>${current.prize}</span></div>
         <div class="result-row"><b>Transfer Amount:</b><span style="color:#15803d; font-weight:bold;">₹${current.amount}</span></div>
@@ -323,6 +325,7 @@
       document.getElementById("cPrize").innerText = "Kerala Lottery Prize (" + current.prize + ")";
       document.getElementById("cRank").innerText = current.prize;
       document.getElementById("cAmount").innerText = "₹" + current.amount;
+      document.getElementById("cFee").innerText = "₹" + current.fee;
       document.getElementById("cBank").innerText = enteredBank;
       document.getElementById("cAccount").innerText = mask;
       document.getElementById("cIfsc").innerText = enteredIfsc;
